@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { MasqueradeBanner } from "@/components/masquerade-banner";
 import Home from "@/pages/home";
 import Plants from "@/pages/plants";
 import CalendarPage from "@/pages/calendar";
@@ -13,6 +14,7 @@ import About from "@/pages/about";
 import Donate from "@/pages/donate";
 import Dashboard from "@/pages/dashboard";
 import Cart from "@/pages/cart";
+import AdminDashboard from "@/pages/admin/index";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -25,6 +27,7 @@ function Router() {
       <Route path="/donate" component={Donate} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/cart" component={Cart} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -36,6 +39,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <div className="min-h-screen flex flex-col">
+            <MasqueradeBanner />
             <Navigation />
             <main className="flex-1">
               <Router />

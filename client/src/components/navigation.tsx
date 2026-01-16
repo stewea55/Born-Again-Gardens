@@ -15,7 +15,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Leaf, Menu, User, LogOut, LayoutDashboard, Heart, ShoppingBasket } from "lucide-react";
+import { Leaf, Menu, User, LogOut, LayoutDashboard, Heart, ShoppingBasket, Shield } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
@@ -37,10 +37,10 @@ export function Navigation() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 hover-elevate rounded-md px-2 py-1" data-testid="link-home">
-            <Leaf className="h-7 w-7 text-primary" />
-            <div className="flex flex-col">
-              <span className="font-semibold text-lg leading-tight">Born Again Gardens</span>
+          <Link href="/" className="flex items-center gap-2 hover-elevate rounded-md px-1 sm:px-2 py-1" data-testid="link-home">
+            <Leaf className="h-6 w-6 sm:h-7 sm:w-7 text-primary flex-shrink-0" />
+            <div className="flex flex-col min-w-0">
+              <span className="font-semibold text-base sm:text-lg leading-tight truncate">Born Again Gardens</span>
               <span className="text-xs text-muted-foreground hidden sm:block">Take what you need, pay what you can</span>
             </div>
           </Link>
@@ -59,9 +59,9 @@ export function Navigation() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Link href="/cart">
-              <Button variant="ghost" size="icon" data-testid="button-cart">
+              <Button variant="ghost" size="icon" className="h-9 w-9" data-testid="button-cart">
                 <ShoppingBasket className="h-5 w-5" />
               </Button>
             </Link>
@@ -104,6 +104,17 @@ export function Navigation() {
                       My Donations
                     </Link>
                   </DropdownMenuItem>
+                  {user.role === "admin" && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="flex items-center gap-2 cursor-pointer text-primary" data-testid="link-admin">
+                          <Shield className="h-4 w-4" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <a href="/api/logout" className="flex items-center gap-2 cursor-pointer text-destructive" data-testid="button-logout">
@@ -114,15 +125,21 @@ export function Navigation() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <a href="/api/login">
+                  <Button variant="ghost" size="icon" className="h-9 w-9 sm:hidden" data-testid="button-sign-in-mobile">
+                    <User className="h-5 w-5" />
+                  </Button>
                   <Button variant="ghost" size="sm" className="hidden sm:flex" data-testid="button-sign-in">
                     <User className="h-4 w-4 mr-2" />
                     Sign In
                   </Button>
                 </a>
                 <Link href="/donate">
-                  <Button size="sm" data-testid="button-donate-nav">
+                  <Button size="icon" className="h-9 w-9 sm:hidden" data-testid="button-donate-nav-mobile">
+                    <Heart className="h-5 w-5" />
+                  </Button>
+                  <Button size="sm" className="hidden sm:flex" data-testid="button-donate-nav">
                     <Heart className="h-4 w-4 mr-2" />
                     Donate
                   </Button>

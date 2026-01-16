@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,10 +8,43 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { Heart, Leaf, Check, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Leaf, Check, Info, Award, Crown, Star, Medal } from "lucide-react";
 import { AuthPromptModal } from "@/components/auth-prompt-modal";
+import type { Sponsor } from "@shared/schema";
 
 const suggestedAmounts = [10, 25, 50, 100, 250];
+
+const sponsorTiers = [
+  { 
+    name: "Platinum", 
+    icon: Crown, 
+    minAmount: 1000, 
+    color: "bg-gradient-to-r from-slate-400 to-slate-200 text-slate-900",
+    benefits: ["Logo on website", "Social media features", "Garden naming opportunity", "VIP event access"]
+  },
+  { 
+    name: "Gold", 
+    icon: Award, 
+    minAmount: 500, 
+    color: "bg-gradient-to-r from-yellow-400 to-yellow-200 text-yellow-900",
+    benefits: ["Logo on website", "Social media features", "Event recognition"]
+  },
+  { 
+    name: "Silver", 
+    icon: Star, 
+    minAmount: 250, 
+    color: "bg-gradient-to-r from-gray-300 to-gray-100 text-gray-800",
+    benefits: ["Name on website", "Newsletter recognition"]
+  },
+  { 
+    name: "Bronze", 
+    icon: Medal, 
+    minAmount: 100, 
+    color: "bg-gradient-to-r from-orange-400 to-orange-200 text-orange-900",
+    benefits: ["Name on supporter list"]
+  },
+];
 
 export default function Donate() {
   const { isAuthenticated, user } = useAuth();
@@ -19,6 +53,10 @@ export default function Donate() {
   const [frequency, setFrequency] = useState<"one-time" | "monthly">("one-time");
   const [emailOptIn, setEmailOptIn] = useState(false);
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
+
+  const { data: sponsors = [] } = useQuery<Sponsor[]>({
+    queryKey: ["/api/sponsors"],
+  });
 
   const handleAmountSelect = (value: number) => {
     setAmount(value);
@@ -224,6 +262,61 @@ export default function Donate() {
           </div>
         </div>
       </div>
+
+      <section className="bg-muted/30 py-12 border-t">
+        <div className="max-w-4xl mx-auto px-4 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center">Sponsor Recognition Tiers</h2>
+          <p className="text-muted-foreground text-center mb-8 font-serif">
+            Join our community of supporters and receive recognition for your generosity
+          </p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {sponsorTiers.map((tier) => {
+              const TierIcon = tier.icon;
+              return (
+                <Card key={tier.name} className="overflow-hidden" data-testid={`card-tier-${tier.name.toLowerCase()}`}>
+                  <div className={`p-4 ${tier.color}`}>
+                    <div className="flex items-center gap-2">
+                      <TierIcon className="h-5 w-5" />
+                      <span className="font-bold">{tier.name}</span>
+                    </div>
+                    <p className="text-sm mt-1">${tier.minAmount}+ annually</p>
+                  </div>
+                  <CardContent className="pt-4">
+                    <ul className="space-y-2 text-sm">
+                      {tier.benefits.map((benefit, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {sponsors.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-xl font-semibold mb-6 text-center">Our Current Sponsors</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {sponsors.map((sponsor) => (
+                  <div key={sponsor.id} className="text-center p-4 bg-background rounded-lg border">
+                    <Badge 
+                      variant="secondary" 
+                      className={sponsorTiers.find(t => t.name === sponsor.tier)?.color || ""}
+                    >
+                      {sponsor.tier}
+                    </Badge>
+                    <p className="font-medium mt-2">{sponsor.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
 
       <AuthPromptModal
         open={authPromptOpen}
