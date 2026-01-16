@@ -252,7 +252,7 @@ export default function Donate() {
                 </p>
                 {!isAuthenticated && (
                   <a href="/api/login">
-                    <Button variant="link" className="px-0 mt-2" data-testid="button-signin-tax">
+                    <Button variant="ghost" className="px-0 mt-2 text-primary underline" data-testid="button-signin-tax">
                       Sign in for donation tracking
                     </Button>
                   </a>

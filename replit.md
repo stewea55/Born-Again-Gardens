@@ -5,7 +5,7 @@
 Born Again Gardens is a community garden nonprofit website serving central Indiana with fresh, organic produce on an honor system. The application allows community members to browse available plants, view harvest calendars, make donations, and manage their accounts. Administrators can manage plant inventory, sponsors, and user accounts.
 
 The platform features:
-- Plant inventory with 68+ varieties organized by category and harvest season
+- Plant inventory with 71 varieties organized by category and harvest season (vegetables, fruits, herbs, flowers)
 - Interactive harvest calendar showing seasonal availability
 - Honor-based donation system ("Take what you need, pay what you can")
 - Sponsor recognition tiers for donors
