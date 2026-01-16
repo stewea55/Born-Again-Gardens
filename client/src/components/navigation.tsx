@@ -15,8 +15,9 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Leaf, Menu, User, LogOut, LayoutDashboard, Heart, ShoppingBasket, Shield } from "lucide-react";
+import { Menu, User, LogOut, LayoutDashboard, Heart, ShoppingBasket, Shield } from "lucide-react";
 import { useState } from "react";
+import logoImage from "@assets/image_1768584867824.png";
 
 const navLinks = [
   { href: "/plants", label: "Our Plants" },
@@ -38,11 +39,8 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 hover-elevate rounded-md px-1 sm:px-2 py-1" data-testid="link-home">
-            <Leaf className="h-6 w-6 sm:h-7 sm:w-7 text-primary flex-shrink-0" />
-            <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-base sm:text-lg leading-tight truncate">Born Again Gardens</span>
-              <span className="text-xs text-muted-foreground hidden sm:block">Take what you need, pay what you can</span>
-            </div>
+            <img src={logoImage} alt="Born Again Gardens" className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0" />
+            <span className="font-serif font-semibold text-base sm:text-lg leading-tight">Born Again Gardens</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
