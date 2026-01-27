@@ -8,14 +8,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Leaf, Calendar, Heart, Scissors, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Leaf, Calendar, Heart, Scissors, Plus, Minus } from "lucide-react";
 import type { Plant } from "@shared/schema";
 
 interface PlantDetailModalProps {
   plant: Plant | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddToCart?: (plant: Plant) => void;
+  onAddToCart?: (plant: Plant, quantity: number) => void;
+  currentQuantity?: number;
 }
 
 const categoryColors: Record<string, string> = {
@@ -25,8 +27,35 @@ const categoryColors: Record<string, string> = {
   flower: "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300",
 };
 
-export function PlantDetailModal({ plant, open, onOpenChange, onAddToCart }: PlantDetailModalProps) {
+export function PlantDetailModal({ plant, open, onOpenChange, onAddToCart, currentQuantity = 0 }: PlantDetailModalProps) {
+  const [quantity, setQuantity] = useState(Math.max(1, currentQuantity || 1));
+  const canAddToCart = plant?.status === "ready";
+
+  useEffect(() => {
+    // Sync quantity with cart when modal opens or currentQuantity changes
+    if (open && plant) {
+      setQuantity(Math.max(0, currentQuantity || 0) || 1);
+    }
+  }, [open, plant, currentQuantity]);
+
   if (!plant) return null;
+
+  const handleQuantityChange = (delta: number) => {
+    const newQuantity = Math.max(0, quantity + delta);
+    setQuantity(newQuantity);
+    // Update cart immediately when quantity changes
+    if (onAddToCart && canAddToCart) {
+      onAddToCart(plant, newQuantity);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (onAddToCart && canAddToCart && quantity > 0) {
+      onAddToCart(plant, quantity);
+      // Close modal after adding to cart
+      onOpenChange(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -135,12 +164,39 @@ export function PlantDetailModal({ plant, open, onOpenChange, onAddToCart }: Pla
           </Tabs>
         </ScrollArea>
 
-        {plant.status === "ready" && onAddToCart && (
+        {onAddToCart && canAddToCart && (
           <div className="pt-4 border-t">
-            <Button className="w-full" onClick={() => onAddToCart(plant)} data-testid="button-modal-add-cart">
-              <Plus className="h-4 w-4 mr-2" />
-              Add to Harvest Basket
-            </Button>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-9 w-9 p-0"
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={quantity <= 0}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-medium min-w-[3rem] text-center">{quantity}</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-9 w-9 p-0"
+                  onClick={() => handleQuantityChange(1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <Button 
+                className="flex-1" 
+                onClick={handleAddToCart} 
+                disabled={quantity <= 0}
+                data-testid="button-modal-add-cart"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {quantity > 0 ? "Add to Harvest Basket" : "Remove from Basket"}
+              </Button>
+            </div>
           </div>
         )}
       </DialogContent>

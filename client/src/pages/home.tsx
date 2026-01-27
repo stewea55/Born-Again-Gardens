@@ -4,31 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SponsorSection } from "@/components/sponsor-section";
-import { Heart, Leaf, Calendar, Users, ArrowRight, Check, Clock, Sprout } from "lucide-react";
-import heroImage from "@assets/generated_images/community_garden_golden_hour.png";
+import { DonationTypeModal } from "@/components/donation-type-modal";
+import { Heart, Calendar, ArrowRight, Check, Clock, Sprout, ShoppingBasket } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import type { Plant, Sponsor } from "@shared/schema";
-
-const features = [
-  {
-    icon: Leaf,
-    title: "68+ Plant Varieties",
-    description: "From heirloom tomatoes to medicinal herbs, we grow a diverse selection of produce for our community.",
-  },
-  {
-    icon: Calendar,
-    title: "Year-Round Growing",
-    description: "Our harvest calendar runs from April through November, with something fresh in every season.",
-  },
-  {
-    icon: Users,
-    title: "Honor System",
-    description: "Take what you need, pay what you can. We believe everyone deserves access to fresh, healthy food.",
-  },
-];
 
 export default function Home() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const [donationModalOpen, setDonationModalOpen] = useState(false);
 
   const { data: plants = [] } = useQuery<Plant[]>({
     queryKey: ["/api/plants"],
@@ -46,7 +30,7 @@ export default function Home() {
       <section className="relative h-[600px] md:h-[700px] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src={heroImage}
+            src="https://images.unsplash.com/photo-1575096865054-07396378e082?q=80&w=2748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Born Again Gardens community garden at sunset"
             className="w-full h-full object-cover"
           />
@@ -62,7 +46,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Fresh Produce for
             <br />
-            <span className="text-primary-foreground/90">Our Community</span>
+            <span className="text-white">Our Community</span>
           </h1>
           
           <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl font-serif">
@@ -72,12 +56,15 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <Link href="/donate">
-              <Button size="lg" className="text-base px-8" data-testid="button-hero-donate">
-                <Heart className="h-5 w-5 mr-2" />
-                Support Our Mission
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="text-base px-8" 
+              data-testid="button-hero-donate"
+              onClick={() => setDonationModalOpen(true)}
+            >
+              <Heart className="h-5 w-5 mr-2" />
+              Support Our Mission
+            </Button>
             <Link href="/plants">
               <Button 
                 size="lg" 
@@ -85,27 +72,10 @@ export default function Home() {
                 className="text-base px-8 backdrop-blur-sm bg-white/10 border-white/30 text-white hover:bg-white/20"
                 data-testid="button-hero-plants"
               >
-                <Leaf className="h-5 w-5 mr-2" />
-                View Our Plants
+                <ShoppingBasket className="h-5 w-5 mr-2" />
+                Your Basket
               </Button>
             </Link>
-          </div>
-
-          <div className="flex items-center gap-4 text-white/80 text-sm">
-            <span className="flex items-center gap-1">
-              <Check className="h-4 w-4" />
-              68 Plant Varieties
-            </span>
-            <span className="hidden sm:block">•</span>
-            <span className="flex items-center gap-1">
-              <Check className="h-4 w-4" />
-              Honor System
-            </span>
-            <span className="hidden sm:block">•</span>
-            <span className="flex items-center gap-1">
-              <Check className="h-4 w-4" />
-              100% Community
-            </span>
           </div>
         </div>
       </section>
@@ -133,27 +103,13 @@ export default function Home() {
         </section>
       )}
 
-      <section className="py-16">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-6">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-serif">
               Born Again Gardens operates on trust and community. Here's how you can participate.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="text-center hover-elevate" data-testid={`card-feature-${index}`}>
-                <CardContent className="pt-8 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground font-serif">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
@@ -255,11 +211,16 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {!isAuthenticated && (
-              <a href="/api/login">
-                <Button size="lg" variant="outline" data-testid="button-cta-signin">
-                  Sign In for Full Access
-                </Button>
-              </a>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                data-testid="button-cta-signin"
+                onClick={() => {
+                  window.location.href = "/api/login";
+                }}
+              >
+                Sign In for Full Access
+              </Button>
             )}
             <Link href="/calendar">
               <Button size="lg" variant={isAuthenticated ? "outline" : "default"} data-testid="button-cta-calendar">
@@ -270,6 +231,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <DonationTypeModal open={donationModalOpen} onOpenChange={setDonationModalOpen} />
     </div>
   );
 }

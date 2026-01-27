@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { HarvestCalendar } from "@/components/harvest-calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Leaf, Sun, Snowflake, Droplets, Wind } from "lucide-react";
+import { useEffect } from "react";
 import type { Plant } from "@shared/schema";
 
 const seasonInfo = [
@@ -35,6 +36,11 @@ export default function CalendarPage() {
   const { data: plants = [], isLoading } = useQuery<Plant[]>({
     queryKey: ["/api/plants"],
   });
+
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   return (
     <div className="min-h-screen">

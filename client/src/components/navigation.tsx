@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/sheet";
 import { Menu, User, LogOut, LayoutDashboard, Heart, ShoppingBasket, Shield } from "lucide-react";
 import { useState } from "react";
-import logoImage from "@assets/image_1768584867824.png";
+import logoImage from "@assets/image_1768587748920.png";
 
 const navLinks = [
-  { href: "/plants", label: "Our Plants" },
-  { href: "/calendar", label: "Harvest Calendar" },
   { href: "/about", label: "About Us" },
+  { href: "/plants", label: "Harvest Now" },
+  { href: "/donate", label: "Founders Club" },
+  { href: "/sponsor", label: "Sponsorships" },
+  { href: "/volunteer", label: "Volunteer" },
+  { href: "/calendar", label: "See Whats Ripe" },
 ];
 
 export function Navigation() {
@@ -39,7 +42,7 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 hover-elevate rounded-md px-1 sm:px-2 py-1" data-testid="link-home">
-            <img src={logoImage} alt="Born Again Gardens" className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0" />
+            <img src={logoImage} alt="Born Again Gardens" className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0 logo-transparent" />
             <span className="font-serif font-semibold text-base sm:text-lg leading-tight">Born Again Gardens</span>
           </Link>
 
@@ -58,7 +61,7 @@ export function Navigation() {
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2">
-            <Link href="/cart">
+            <Link href="/basket">
               <Button variant="ghost" size="icon" className="h-9 w-9" data-testid="button-cart">
                 <ShoppingBasket className="h-5 w-5" />
               </Button>
@@ -124,16 +127,30 @@ export function Navigation() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-1 sm:gap-2">
-                <a href="/api/login">
-                  <Button variant="ghost" size="icon" className="h-9 w-9 sm:hidden" data-testid="button-sign-in-mobile">
-                    <User className="h-5 w-5" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="hidden sm:flex" data-testid="button-sign-in">
-                    <User className="h-4 w-4 mr-2" />
-                    Sign In
-                  </Button>
-                </a>
-                <Link href="/donate">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9 sm:hidden" 
+                  data-testid="button-sign-in-mobile"
+                  onClick={() => {
+                    window.location.href = "/api/login";
+                  }}
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="hidden sm:flex" 
+                  data-testid="button-sign-in"
+                  onClick={() => {
+                    window.location.href = "/api/login";
+                  }}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+                <Link href="/sponsor">
                   <Button size="icon" className="h-9 w-9 sm:hidden" data-testid="button-donate-nav-mobile">
                     <Heart className="h-5 w-5" />
                   </Button>
@@ -167,12 +184,18 @@ export function Navigation() {
                   {!isAuthenticated && (
                     <>
                       <div className="border-t pt-4">
-                        <a href="/api/login">
-                          <Button variant="outline" className="w-full" data-testid="button-mobile-sign-in">
-                            <User className="h-4 w-4 mr-2" />
-                            Sign In
-                          </Button>
-                        </a>
+                        <Button 
+                          variant="outline" 
+                          className="w-full" 
+                          data-testid="button-mobile-sign-in"
+                          onClick={() => {
+                            setMobileOpen(false);
+                            window.location.href = "/api/login";
+                          }}
+                        >
+                          <User className="h-4 w-4 mr-2" />
+                          Sign In
+                        </Button>
                       </div>
                     </>
                   )}

@@ -18,7 +18,21 @@ async function fetchUser(): Promise<User | null> {
 }
 
 async function logout(): Promise<void> {
-  window.location.href = "/api/logout";
+  try {
+    const response = await fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    if (response.ok) {
+      window.location.href = "/";
+    } else {
+      // Fallback to GET if POST fails
+      window.location.href = "/api/logout";
+    }
+  } catch (error) {
+    // Fallback to GET on error
+    window.location.href = "/api/logout";
+  }
 }
 
 export function useAuth() {

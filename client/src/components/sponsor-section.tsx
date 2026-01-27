@@ -112,7 +112,7 @@ export function SponsorSection({ sponsors }: SponsorSectionProps) {
               <p className="text-muted-foreground mb-6 font-serif">
                 Help us grow our garden and support the community. Every contribution makes a difference.
               </p>
-              <Link href="/donate">
+              <Link href="/sponsor">
                 <Button data-testid="button-become-sponsor">
                   <Heart className="h-4 w-4 mr-2" />
                   Support Our Mission

@@ -8,6 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -21,6 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -37,8 +45,20 @@ import {
   Plus,
   UserCheck,
   AlertTriangle,
+  FileText,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import type { Plant, Sponsor, Donation, User } from "@shared/schema";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+import type { Plant, Sponsor, Donation, User, PlantStatus, UserPreferences } from "@shared/schema";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -46,6 +66,8 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [masqueradeUserId, setMasqueradeUserId] = useState<string | null>(null);
+  const [plantsPage, setPlantsPage] = useState(1);
+  const plantsPerPage = 10;
 
   // Check if user is admin
   const isAdmin = user?.role === "admin";
@@ -80,6 +102,97 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/donations"],
     enabled: isAdmin,
   });
+
+  const { data: userPreferences = [] } = useQuery<UserPreferences[]>({
+    queryKey: ["/api/admin/user-preferences"],
+    enabled: isAdmin,
+  });
+
+  const [editingPlant, setEditingPlant] = useState<Plant | null>(null);
+  const [editStatus, setEditStatus] = useState<PlantStatus | "auto">("out_of_season");
+  const currentYear = new Date().getFullYear();
+  const preferencesByUserId = userPreferences.reduce<Record<string, UserPreferences>>((acc, pref) => {
+    acc[pref.userId] = pref;
+    return acc;
+  }, {});
+
+  const updatePlantMutation = useMutation({
+    mutationFn: async ({ plantId, status }: { plantId: number; status: PlantStatus }) => {
+      return apiRequest("PUT", `/api/admin/plants/${plantId}`, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
+      setEditingPlant(null);
+      toast({
+        title: "Success",
+        description: "Plant status updated successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update plant status",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateAutoStatusMutation = useMutation({
+    mutationFn: async ({ plantId }: { plantId: number }) => {
+      return apiRequest("PUT", `/api/admin/plants/${plantId}/auto-status`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
+      setEditingPlant(null);
+      toast({
+        title: "Success",
+        description: "Plant status recalculated from harvest dates",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to recalculate plant status",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateTaxVisibilityMutation = useMutation({
+    mutationFn: async ({ userId, taxDocumentsVisible }: { userId: string; taxDocumentsVisible: boolean }) => {
+      return apiRequest("PUT", `/api/admin/users/${userId}/tax-visibility`, { taxDocumentsVisible });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/user-preferences"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update tax document visibility",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleEditPlant = (plant: Plant) => {
+    setEditingPlant(plant);
+    setEditStatus(plant.status || "out_of_season");
+  };
+
+  const handleSavePlantStatus = () => {
+    if (editingPlant) {
+      if (editStatus === "auto") {
+        // Call the auto-status endpoint instead
+        updateAutoStatusMutation.mutate({ plantId: editingPlant.id });
+      } else {
+        // Normal status update
+        updatePlantMutation.mutate({
+          plantId: editingPlant.id,
+          status: editStatus as PlantStatus,
+        });
+      }
+    }
+  };
 
   const masqueradeMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -126,6 +239,11 @@ export default function AdminDashboard() {
     return null;
   }
 
+  const usersById = allUsers.reduce<Record<string, User>>((acc, userItem) => {
+    acc[userItem.id] = userItem;
+    return acc;
+  }, {});
+
   const filteredUsers = allUsers.filter(
     (u) =>
       u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -134,6 +252,14 @@ export default function AdminDashboard() {
   );
 
   const totalDonations = allDonations.reduce((sum, d) => sum + parseFloat(d.amount), 0);
+  const yearDonations = allDonations.filter((d) => d.taxYear === currentYear);
+  const yearTotal = yearDonations.reduce((sum, d) => sum + parseFloat(d.amount), 0);
+
+  // Pagination for plants
+  const totalPlantsPages = Math.ceil(plants.length / plantsPerPage);
+  const startIndex = (plantsPage - 1) * plantsPerPage;
+  const endIndex = startIndex + plantsPerPage;
+  const paginatedPlants = plants.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -255,12 +381,15 @@ export default function AdminDashboard() {
                         <TableHead className="hidden sm:table-cell">Email</TableHead>
                         <TableHead>Role</TableHead>
                         <TableHead className="hidden md:table-cell">Joined</TableHead>
+                        <TableHead>Tax Docs</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredUsers.map((u) => (
-                        <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
+                      {filteredUsers.map((u) => {
+                        const taxVisible = preferencesByUserId[u.id]?.taxDocumentsVisible !== false;
+                        return (
+                          <TableRow key={u.id} data-testid={`row-user-${u.id}`}>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
@@ -278,7 +407,20 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">{u.email}</TableCell>
                           <TableCell>
-                            <Badge variant={u.role === "admin" ? "default" : "secondary"}>
+                            <Badge 
+                              variant={
+                                u.role === "admin" 
+                                  ? "default" 
+                                  : u.role === "company"
+                                  ? "default"
+                                  : "secondary"
+                              }
+                              className={
+                                u.role === "company"
+                                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                                  : ""
+                              }
+                            >
                               {u.role || "user"}
                             </Badge>
                           </TableCell>
@@ -286,7 +428,33 @@ export default function AdminDashboard() {
                             {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "-"}
                           </TableCell>
                           <TableCell>
+                            <Button
+                              size="sm"
+                              variant={taxVisible ? "default" : "outline"}
+                              onClick={() =>
+                                updateTaxVisibilityMutation.mutate({
+                                  userId: u.id,
+                                  taxDocumentsVisible: !taxVisible,
+                                })
+                              }
+                              data-testid={`button-tax-visibility-${u.id}`}
+                            >
+                              {taxVisible ? "Visible" : "Hidden"}
+                            </Button>
+                          </TableCell>
+                          <TableCell>
                             <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => {
+                                  window.open(`/api/donations/tax-document/${u.id}?year=${currentYear}`, "_blank");
+                                }}
+                                data-testid={`button-view-tax-${u.id}`}
+                              >
+                                <FileText className="h-4 w-4" />
+                              </Button>
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button
@@ -334,8 +502,9 @@ export default function AdminDashboard() {
                               </Dialog>
                             </div>
                           </TableCell>
-                        </TableRow>
-                      ))}
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
@@ -372,7 +541,7 @@ export default function AdminDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {plants.slice(0, 10).map((plant) => (
+                      {paginatedPlants.map((plant) => (
                         <TableRow key={plant.id} data-testid={`row-plant-${plant.id}`}>
                           <TableCell className="font-medium">{plant.name}</TableCell>
                           <TableCell>
@@ -397,7 +566,13 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1">
-                              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-edit-plant-${plant.id}`}>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-8 w-8" 
+                                data-testid={`button-edit-plant-${plant.id}`}
+                                onClick={() => handleEditPlant(plant)}
+                              >
                                 <Edit className="h-4 w-4" />
                               </Button>
                             </div>
@@ -407,10 +582,54 @@ export default function AdminDashboard() {
                     </TableBody>
                   </Table>
                 </div>
-                {plants.length > 10 && (
-                  <p className="text-sm text-muted-foreground text-center mt-4">
-                    Showing 10 of {plants.length} plants
-                  </p>
+                {plants.length > plantsPerPage && (
+                  <div className="mt-4">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => setPlantsPage((p) => Math.max(1, p - 1))}
+                            className={plantsPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                          />
+                        </PaginationItem>
+                        {Array.from({ length: totalPlantsPages }, (_, i) => i + 1).map((page) => {
+                          if (
+                            page === 1 ||
+                            page === totalPlantsPages ||
+                            (page >= plantsPage - 1 && page <= plantsPage + 1)
+                          ) {
+                            return (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  onClick={() => setPlantsPage(page)}
+                                  isActive={plantsPage === page}
+                                  className="cursor-pointer"
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            );
+                          } else if (page === plantsPage - 2 || page === plantsPage + 2) {
+                            return (
+                              <PaginationItem key={page}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            );
+                          }
+                          return null;
+                        })}
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => setPlantsPage((p) => Math.min(totalPlantsPages, p + 1))}
+                            className={plantsPage === totalPlantsPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                    <p className="text-sm text-muted-foreground text-center mt-2">
+                      Showing {startIndex + 1}-{Math.min(endIndex, plants.length)} of {plants.length} plants
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -435,16 +654,31 @@ export default function AdminDashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {allDonations.map((donation) => (
-                          <TableRow key={donation.id} data-testid={`row-donation-${donation.id}`}>
-                            <TableCell>
-                              {donation.createdAt ? new Date(donation.createdAt).toLocaleDateString() : "-"}
-                            </TableCell>
-                            <TableCell>{donation.userId}</TableCell>
-                            <TableCell className="font-medium">${donation.amount}</TableCell>
-                            <TableCell className="hidden md:table-cell">{donation.taxYear}</TableCell>
-                          </TableRow>
-                        ))}
+                        {allDonations.map((donation) => {
+                          const donationUser = usersById[donation.userId];
+                          const userLabel =
+                            donationUser?.firstName || donationUser?.lastName
+                              ? `${donationUser?.firstName || ""} ${donationUser?.lastName || ""}`.trim()
+                              : donationUser?.email || donation.userId;
+
+                          return (
+                            <TableRow key={donation.id} data-testid={`row-donation-${donation.id}`}>
+                              <TableCell>
+                                {donation.createdAt ? new Date(donation.createdAt).toLocaleDateString() : "-"}
+                              </TableCell>
+                              <TableCell>{userLabel}</TableCell>
+                              <TableCell className="font-medium">${donation.amount}</TableCell>
+                              <TableCell className="hidden md:table-cell">{donation.taxYear}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        <TableRow className="bg-muted/50 font-bold">
+                          <TableCell colSpan={2} className="text-right">
+                            Total Donations ({currentYear}):
+                          </TableCell>
+                          <TableCell className="font-bold text-lg">${yearTotal.toFixed(2)}</TableCell>
+                          <TableCell className="hidden md:table-cell"></TableCell>
+                        </TableRow>
                       </TableBody>
                     </Table>
                   </div>
@@ -529,6 +763,48 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Plant Status Dialog */}
+      <Dialog open={!!editingPlant} onOpenChange={(open) => !open && setEditingPlant(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Plant Status</DialogTitle>
+            <DialogDescription>
+              Update the status for {editingPlant?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Status</label>
+              <Select value={editStatus} onValueChange={(v) => setEditStatus(v as PlantStatus | "auto")}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ready">Ready Now</SelectItem>
+                  <SelectItem value="coming_soon">Coming Soon</SelectItem>
+                  <SelectItem value="out_of_season">Out of Season</SelectItem>
+                  <SelectItem value="auto">Auto (By Harvest)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setEditingPlant(null)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSavePlantStatus}
+                disabled={updatePlantMutation.isPending || updateAutoStatusMutation.isPending}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

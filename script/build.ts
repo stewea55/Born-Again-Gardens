@@ -27,7 +27,7 @@ const allowlist = [
   "stripe",
   "uuid",
   "ws",
-  "xlsx",
+  // REMOVED: "xlsx" - Only used in scripts, not web server (security vulnerability)
   "zod",
   "zod-validation-error",
 ];

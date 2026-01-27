@@ -1,11 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Heart, Leaf, Users, MapPin, Mail, ArrowRight, Check, Church, Apple, Brain, BookOpen } from "lucide-react";
+import { Leaf, Users, Mail, ArrowRight, Church, Apple, Brain, BookOpen } from "lucide-react";
 import { SiInstagram, SiFacebook } from "react-icons/si";
-import gardenImage from "@assets/stock_images/community_garden_wit_f7613189.jpg";
-import foundersImage from "@assets/stock_images/young_couple_smiling_b08b0a59.jpg";
-import logoImage from "@assets/image_1768584867824.png";
+import logoImage from "@assets/image_1768587748920.png";
 
 const whatWeAddress = [
   {
@@ -30,21 +28,13 @@ const whatWeAddress = [
   },
 ];
 
-const investmentAreas = [
-  "Infrastructure (fencing, trellises, garden beds, and our welcome & checkout shack)",
-  "A water filtration system to purify water from a retention pond",
-  "Fruit trees and perennial plantings",
-  "Seeds and starters",
-  "Benches, picnic tables, yard games, & signage",
-];
-
 export default function About() {
   return (
     <div className="min-h-screen">
       <section className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src={gardenImage}
+            src="https://images.unsplash.com/photo-1456295198429-05d2315cfebb?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Z3JhcGV2aW5lfGVufDB8fDB8fHwy"
             alt="Born Again Gardens community garden"
             className="w-full h-full object-cover"
           />
@@ -54,7 +44,7 @@ export default function About() {
         <div className="relative max-w-4xl mx-auto px-4 md:px-8 text-center text-white">
           <img src={logoImage} alt="Born Again Gardens" className="h-24 w-24 mx-auto mb-6" />
           <p className="text-lg md:text-xl italic mb-4 text-white/90">Cultivating Gardens of New Life</p>
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 font-serif">About Born Again Gardens</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-6 font-serif">Born Again Gardens</h1>
           <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
             Born Again Gardens is a vibrant new nonprofit cultivating abundance and provision 
             by bringing new life to unused church land. Beginning in Hamilton County, IN, 
@@ -70,49 +60,17 @@ export default function About() {
               We believe gardens should be places of <strong>beauty</strong>, <strong>healing</strong>, and <strong>provision</strong>. 
               They invite awe, restore wellness, and reconnect us—to the land, to one another, and to our Creator.
             </p>
-            <p className="text-lg text-primary font-semibold mt-6">
-              We are just beginning, and you're invited to help sow the first seeds.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-muted/30">
-        <div className="max-w-5xl mx-auto px-4 md:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Help this Vision Take Root</h2>
-            <p className="text-lg text-muted-foreground font-serif max-w-3xl mx-auto">
-              Born Again Gardens is in its earliest season—preparing to build our first garden in Cicero, IN. 
-              We have big dreams and a vibrant vision for this space!
-            </p>
-          </div>
-
-          <Card className="mb-8">
-            <CardContent className="p-6 md:p-8">
-              <h3 className="text-xl font-semibold mb-4">Your support helps us invest in:</h3>
-              <ul className="space-y-3">
-                {investmentAreas.map((area, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-muted-foreground">{area}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          <div className="text-center">
-            <p className="text-lg text-muted-foreground mb-6 font-serif">
-              Every gift helps sow seeds that will grow into lasting abundance for our community. 
-              <strong> If you feel led to support this work, we invite you to give and be a part of the start.</strong>
-            </p>
-            <Link href="/donate">
-              <Button size="lg" data-testid="button-about-donate">
-                <Heart className="h-5 w-5 mr-2" />
-                Ways to Give
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
+            <div className="mt-8">
+              <p className="text-lg text-muted-foreground mb-6 font-serif">
+                We are just beginning, and you're invited to help
+              </p>
+              <Link href="/donate">
+                <Button size="lg" className="text-lg px-8 py-6" data-testid="button-sow-first-seeds">
+                  sow the first seeds
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -120,15 +78,36 @@ export default function About() {
       <section className="py-16 bg-background">
         <div className="max-w-5xl mx-auto px-4 md:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">What We're Building</h2>
-            <p className="text-lg text-muted-foreground font-serif max-w-3xl mx-auto">
-              Born Again Gardens partners with churches to steward unused land as living, abundant spaces—
-              managed intentionally by the organization and open to the public.
-            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-8">What we're building</h2>
+            <div className="text-center bg-muted/50 rounded-xl p-8 mb-12">
+              <p className="text-lg font-serif mb-4">
+                These gardens are thoughtfully designed and carefully tended to be
+              </p>
+              <p className="text-xl font-semibold text-primary mb-4">
+                abundant, beautiful, spacious, and educational.
+              </p>
+              <p className="text-muted-foreground italic mb-6">
+                (Think: farm / park / art installation / home ec class)
+              </p>
+              <p className="text-lg font-serif mb-2">
+                They are places for neighbors to
+              </p>
+              <p className="text-xl font-semibold text-primary mb-4">
+                gather, harvest, play, learn, & rejuvenate.
+              </p>
+              <p className="text-lg font-serif text-muted-foreground italic">
+                The ways gardens were always meant to be.
+              </p>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="mb-12">
-            <p className="text-center text-lg mb-8 font-serif">
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-5xl mx-auto px-4 md:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Why It Matters</h2>
+            <p className="text-lg text-muted-foreground font-serif mb-8">
               At its heart, this work is a response to real needs in our towns and neighborhoods:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -151,27 +130,6 @@ export default function About() {
                 );
               })}
             </div>
-          </div>
-
-          <div className="text-center bg-muted/50 rounded-xl p-8">
-            <p className="text-lg font-serif mb-4">
-              These gardens are thoughtfully designed and carefully tended to be
-            </p>
-            <p className="text-xl font-semibold text-primary mb-4">
-              abundant, beautiful, spacious, and educational.
-            </p>
-            <p className="text-muted-foreground italic mb-6">
-              (Think: farm / park / art installation / home ec class)
-            </p>
-            <p className="text-lg font-serif mb-2">
-              They are places for neighbors to
-            </p>
-            <p className="text-xl font-semibold text-primary mb-4">
-              gather, harvest, play, learn, & rejuvenate.
-            </p>
-            <p className="text-lg font-serif text-muted-foreground">
-              The ways gardens were always meant to be.
-            </p>
           </div>
         </div>
       </section>
@@ -277,7 +235,7 @@ export default function About() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/donate">
+            <Link href="/sponsor">
               <Button size="lg" data-testid="button-about-vision">
                 <Leaf className="h-5 w-5 mr-2" />
                 Help this Vision Take Root

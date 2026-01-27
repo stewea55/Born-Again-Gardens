@@ -60,16 +60,23 @@ Key database tables:
 - `cartItems` - Shopping cart persistence
 
 ### Authentication
-- **Provider**: Replit Auth (OpenID Connect)
-- **Implementation**: Passport.js with custom OIDC strategy
+- **Provider**: Google OAuth 2.0 (with Replit Auth fallback support)
+- **Implementation**: Passport.js with Google OAuth strategy
 - **Session Storage**: PostgreSQL-backed sessions
 - **Location**: `server/replit_integrations/auth/`
 
 Authentication flow:
 1. User initiates login via `/api/login`
-2. Redirected to Replit OIDC provider
+2. Redirected to Google OAuth provider
 3. Callback processes tokens and creates/updates user
 4. Session established with user claims
+
+**Environment Variables Required**:
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `BASE_URL` - Base URL of the application (e.g., `http://localhost:5000` for development or `https://yourdomain.com` for production)
+  - If not set, defaults to `http://localhost:${PORT}` for development
+  - **Important**: The callback URL (`${BASE_URL}/api/auth/google/callback`) must exactly match what's configured in Google Cloud Console authorized redirect URIs
 
 ### Build System
 - **Development**: Vite dev server with HMR, proxied through Express

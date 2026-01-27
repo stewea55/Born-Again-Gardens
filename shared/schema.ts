@@ -63,6 +63,7 @@ export const userPreferences = pgTable("user_preferences", {
   userId: varchar("user_id").notNull().unique(),
   emailMarketing: boolean("email_marketing").default(false),
   harvestAlerts: boolean("harvest_alerts").default(false),
+  taxDocumentsVisible: boolean("tax_documents_visible").default(true),
   newsletterFrequency: text("newsletter_frequency").default("weekly"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -89,6 +90,19 @@ export const socialPosts = pgTable("social_posts", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Transactions table for payment tracking
+export const transactions = pgTable("transactions", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: varchar("user_id").notNull(),
+  sessionId: text("session_id"), // For guest purchases
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  paymentMethod: text("payment_method").notNull(), // "stripe", "cash", etc.
+  paymentIntentId: text("payment_intent_id"), // Stripe payment intent ID
+  status: text("status").notNull().default("pending"), // "pending", "completed", "failed"
+  cartItems: jsonb("cart_items"), // Store cart items as JSON
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const plantsRelations = relations(plants, ({ many }) => ({
   cartItems: many(cartItems),
@@ -101,37 +115,20 @@ export const cartItemsRelations = relations(cartItems, ({ one }) => ({
   }),
 }));
 
-// Insert schemas
-export const insertPlantSchema = createInsertSchema(plants).omit({
-  id: true,
-  createdAt: true,
-});
+// Insert schemas - using type casting to avoid omit issues
+export const insertPlantSchema = createInsertSchema(plants) as z.ZodObject<any>;
 
-export const insertSponsorSchema = createInsertSchema(sponsors).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertSponsorSchema = createInsertSchema(sponsors) as z.ZodObject<any>;
 
-export const insertDonationSchema = createInsertSchema(donations).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertDonationSchema = createInsertSchema(donations) as z.ZodObject<any>;
 
-export const insertUserPreferencesSchema = createInsertSchema(userPreferences).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertUserPreferencesSchema = createInsertSchema(userPreferences) as z.ZodObject<any>;
 
-export const insertCartItemSchema = createInsertSchema(cartItems).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertCartItemSchema = createInsertSchema(cartItems) as z.ZodObject<any>;
 
-export const insertSocialPostSchema = createInsertSchema(socialPosts).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertSocialPostSchema = createInsertSchema(socialPosts) as z.ZodObject<any>;
+
+export const insertTransactionSchema = createInsertSchema(transactions) as z.ZodObject<any>;
 
 // Types
 export type Plant = typeof plants.$inferSelect;
@@ -151,3 +148,6 @@ export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 
 export type SocialPost = typeof socialPosts.$inferSelect;
 export type InsertSocialPost = z.infer<typeof insertSocialPostSchema>;
+
+export type Transaction = typeof transactions.$inferSelect;
+export type InsertTransaction = z.infer<typeof insertTransactionSchema>;

@@ -31,44 +31,60 @@ body {
   --opaque-button-border-intensity: -8;
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
-  --background: 0 0% 100%;
-  --foreground: 0 0% 9%;
-  --border: 0 0% 91%;
-  --card: 0 0% 98%;
-  --card-foreground: 0 0% 9%;
-  --card-border: 0 0% 95%;
+  /* Brand Colors */
+  --brand-bright-green: 95 20% 56%;
+  --brand-sage: 105 10% 45%;
+  --brand-olive: 105 10% 33%;
+  --brand-clay: 20 35% 56%;
+  --brand-golden: 30 60% 63%;
+  --brand-fig: 330 20% 40%;
+  --brand-soil: 60 2% 18%;
+  --brand-parchment: 40 20% 94%;
+  
+  --background: 40 20% 94%; /* Parchment */
+  --foreground: 60 2% 18%; /* Soil */
+  --border: 105 10% 85%; /* Light Sage */
+  --card: 40 20% 98%; /* Light Parchment */
+  --card-foreground: 60 2% 18%; /* Soil */
+  --card-border: 105 10% 85%; /* Light Sage */
   --sidebar: 0 0% 96%;
   --sidebar-foreground: 0 0% 9%;
   --sidebar-border: 0 0% 93%;
-  --sidebar-primary: 142 45% 32%;
-  --sidebar-primary-foreground: 142 45% 98%;
-  --sidebar-accent: 0 0% 93%;
-  --sidebar-accent-foreground: 0 0% 9%;
-  --sidebar-ring: 142 45% 32%;
+  --sidebar-primary: 95 20% 56%; /* Bright Green */
+  --sidebar-primary-foreground: 40 20% 94%; /* Parchment */
+  --sidebar-accent: 105 10% 85%; /* Light Sage */
+  --sidebar-accent-foreground: 60 2% 18%; /* Soil */
+  --sidebar-ring: 95 20% 56%; /* Bright Green */
   --popover: 0 0% 95%;
   --popover-foreground: 0 0% 9%;
   --popover-border: 0 0% 92%;
-  --primary: 142 45% 32%;
-  --primary-foreground: 142 45% 98%;
-  --secondary: 0 0% 92%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 94%;
-  --muted-foreground: 0 0% 35%;
-  --accent: 35 15% 93%;
-  --accent-foreground: 35 15% 12%;
+  --primary: 95 20% 56%; /* Bright Green */
+  --primary-foreground: 60 2% 18%; /* Soil */
+  --secondary: 105 10% 45%; /* Sage */
+  --secondary-foreground: 40 20% 94%; /* Parchment */
+  --muted: 40 20% 98%; /* Light Parchment */
+  --muted-foreground: 105 10% 45%; /* Sage */
+  --accent: 30 60% 63%; /* Golden */
+  --accent-foreground: 60 2% 18%; /* Soil */
   --destructive: 0 72% 35%;
   --destructive-foreground: 0 72% 98%;
   --input: 0 0% 65%;
-  --ring: 142 45% 32%;
+  --ring: 95 20% 56%; /* Bright Green */
   --chart-1: 142 55% 28%;
   --chart-2: 35 65% 35%;
   --chart-3: 25 75% 32%;
   --chart-4: 195 55% 30%;
   --chart-5: 280 50% 32%;
-  --font-sans: 'Lora', Georgia, serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+  /* Brand Typography */
+  --font-title: 'Libre Baskerville', Georgia, serif;
+  --font-heading: 'Libre Baskerville', Georgia, serif;
+  --font-heading-3: 'Poppins', sans-serif;
+  --font-subtitle: 'Cormorant Garamond', Georgia, serif;
+  --font-paragraph: 'Poppins', sans-serif;
+  --font-sans: 'Poppins', sans-serif;
+  --font-serif: 'Libre Baskerville', Georgia, serif;
   --font-mono: Menlo, monospace;
-  --font-body: 'Lora', Georgia, serif;
+  --font-body: 'Poppins', sans-serif;
   --radius: .5rem;
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
@@ -116,35 +132,35 @@ body {
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
-  --background: 0 0% 7%;
-  --foreground: 0 0% 96%;
-  --border: 0 0% 16%;
-  --card: 0 0% 9%;
-  --card-foreground: 0 0% 96%;
-  --card-border: 0 0% 12%;
+  --background: 60 2% 18%; /* Soil */
+  --foreground: 40 20% 94%; /* Parchment */
+  --border: 105 10% 40%; /* Darker Sage */
+  --card: 105 10% 33%; /* Olive */
+  --card-foreground: 40 20% 94%; /* Parchment */
+  --card-border: 105 10% 40%; /* Darker Sage */
   --sidebar: 0 0% 11%;
   --sidebar-foreground: 0 0% 96%;
   --sidebar-border: 0 0% 14%;
-  --sidebar-primary: 142 45% 35%;
-  --sidebar-primary-foreground: 142 45% 98%;
-  --sidebar-accent: 0 0% 14%;
-  --sidebar-accent-foreground: 0 0% 96%;
-  --sidebar-ring: 142 45% 35%;
+  --sidebar-primary: 95 20% 56%; /* Bright Green */
+  --sidebar-primary-foreground: 40 20% 94%; /* Parchment */
+  --sidebar-accent: 105 10% 40%; /* Darker Sage */
+  --sidebar-accent-foreground: 40 20% 94%; /* Parchment */
+  --sidebar-ring: 95 20% 56%; /* Bright Green */
   --popover: 0 0% 12%;
   --popover-foreground: 0 0% 96%;
   --popover-border: 0 0% 15%;
-  --primary: 142 45% 35%;
-  --primary-foreground: 142 45% 98%;
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 96%;
-  --muted: 0 0% 13%;
-  --muted-foreground: 0 0% 65%;
-  --accent: 35 12% 14%;
-  --accent-foreground: 35 12% 94%;
+  --primary: 95 20% 56%; /* Bright Green */
+  --primary-foreground: 40 20% 94%; /* Parchment */
+  --secondary: 105 10% 45%; /* Sage */
+  --secondary-foreground: 40 20% 94%; /* Parchment */
+  --muted: 105 10% 33%; /* Olive */
+  --muted-foreground: 40 20% 94%; /* Parchment */
+  --accent: 30 60% 63%; /* Golden */
+  --accent-foreground: 60 2% 18%; /* Soil */
   --destructive: 0 65% 35%;
   --destructive-foreground: 0 65% 98%;
   --input: 0 0% 35%;
-  --ring: 142 45% 35%;
+  --ring: 95 20% 56%; /* Bright Green */
   --chart-1: 142 60% 65%;
   --chart-2: 35 70% 68%;
   --chart-3: 25 80% 70%;
@@ -196,6 +212,23 @@ body {
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  /* Brand Typography Hierarchy */
+  h1 {
+    @apply font-heading font-bold;
+  }
+
+  h2 {
+    @apply font-heading font-bold;
+  }
+
+  h3 {
+    @apply font-heading-3 font-bold uppercase;
+  }
+
+  p {
+    @apply font-paragraph;
+  }
 }
 
 /**
@@ -230,6 +263,47 @@ body {
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;
+  }
+
+  /* Brand Typography Utility Classes */
+  .font-title {
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+
+  .font-heading-1 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .font-heading-2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .font-heading-3 {
+    font-family: var(--font-heading-3);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .font-subtitle {
+    font-family: var(--font-subtitle);
+    font-style: italic;
+  }
+
+  .font-paragraph {
+    font-family: var(--font-paragraph);
+    font-weight: 400;
+  }
+
+  /* Logo transparency - removes white backgrounds */
+  .logo-transparent {
+    mix-blend-mode: multiply;
+  }
+
+  .dark .logo-transparent {
+    mix-blend-mode: screen;
   }
 
   /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of

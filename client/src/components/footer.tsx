@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Leaf, Mail, MapPin, Phone, Facebook, Instagram } from "lucide-react";
+import { Leaf, Mail, Facebook, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,21 +27,12 @@ export function Footer() {
               <span className="font-semibold text-lg">Born Again Gardens</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4 font-serif">
-              A community garden serving central Indiana with fresh, organic produce on an honor system. 
-              Take what you need, pay what you can.
+              A community garden serving central Indiana with fresh produce on an honor system. Take what you need, pay what you can. 
+              <br /><br />
+              <em>I am the true vine, and my Father is the gardener. [...] If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.</em>
+              <br />
+              John 15:1-5
             </p>
-            <div className="flex gap-2">
-              <Button variant="ghost" size="icon" asChild>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" data-testid="link-facebook">
-                  <Facebook className="h-5 w-5" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" asChild>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" data-testid="link-instagram">
-                  <Instagram className="h-5 w-5" />
-                </a>
-              </Button>
-            </div>
           </div>
 
           <div>
@@ -63,29 +54,33 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/donate" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-donate">
-                  Support Our Mission
+                <Link href="/basket" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-checkout">
+                  Checkout
                 </Link>
               </li>
             </ul>
+            <div className="flex gap-2 mt-4">
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" data-testid="link-facebook">
+                  <Facebook className="h-5 w-5" />
+                </a>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" data-testid="link-instagram">
+                  <Instagram className="h-5 w-5" />
+                </a>
+              </Button>
+            </div>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2 text-muted-foreground">
-                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>Central Indiana, USA</span>
-              </li>
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <a href="mailto:hello@bornagaingardens.org" className="hover:text-foreground transition-colors">
-                  hello@bornagaingardens.org
+                <a href="mailto:info@bornagaingardens.com" className="hover:text-foreground transition-colors">
+                  info@bornagaingardens.com
                 </a>
-              </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>Contact via social media</span>
               </li>
             </ul>
           </div>
@@ -93,7 +88,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Newsletter</h4>
             <p className="text-sm text-muted-foreground mb-4">
-              Get monthly garden updates and harvest notifications.
+              Get monthly garden updates, harvest notifications, and opportunities to volunteer!
             </p>
             {subscribed ? (
               <div className="bg-primary/10 text-primary p-3 rounded-md text-sm">
@@ -125,7 +120,7 @@ export function Footer() {
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Born Again Gardens. All rights reserved.</p>
-          <p className="mt-1">A 501(c)(3) nonprofit organization.</p>
+          <p className="mt-1">A pending 501(c)(3) nonprofit organization.</p>
         </div>
       </div>
     </footer>

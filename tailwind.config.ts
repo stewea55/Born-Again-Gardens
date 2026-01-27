@@ -81,11 +81,27 @@ export default {
           busy: "rgb(239 68 68)",
           offline: "rgb(156 163 175)",
         },
+        // Brand Colors
+        brand: {
+          "bright-green": "#8BA17A",
+          sage: "#6F7F6A",
+          olive: "#4F5F4A",
+          clay: "#B78268",
+          golden: "#D9A066",
+          fig: "#7C5366",
+          soil: "#2F2F2C",
+          parchment: "#F3EFE8",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
+        title: ["var(--font-title)"],
+        heading: ["var(--font-heading)"],
+        "heading-3": ["var(--font-heading-3)"],
+        subtitle: ["var(--font-subtitle)"],
+        paragraph: ["var(--font-paragraph)"],
       },
       keyframes: {
         "accordion-down": {

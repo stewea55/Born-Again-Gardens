@@ -109,33 +109,6 @@ export default function Dashboard() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatsCard
-            title="Total Donated"
-            value={`$${totalDonated.toFixed(2)}`}
-            description="Lifetime contributions"
-            icon={Heart}
-          />
-          <StatsCard
-            title="This Year"
-            value={`$${yearTotal.toFixed(2)}`}
-            description={`${currentYear} tax year`}
-            icon={Calendar}
-          />
-          <StatsCard
-            title="Ready Now"
-            value={readyPlants.length}
-            description="Plants to harvest"
-            icon={Check}
-          />
-          <StatsCard
-            title="Coming Soon"
-            value={comingSoonPlants.length}
-            description="In next 2-4 weeks"
-            icon={Clock}
-          />
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <Card>
@@ -236,6 +209,12 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-6">
+            <StatsCard
+              title="This Year"
+              value={`$${yearTotal.toFixed(2)}`}
+              description={`${currentYear} tax year`}
+              icon={Calendar}
+            />
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -269,7 +248,7 @@ export default function Dashboard() {
                   <div className="text-center py-6 text-muted-foreground">
                     <Heart className="h-10 w-10 mx-auto mb-3 opacity-50" />
                     <p className="text-sm">No donations yet</p>
-                    <Link href="/donate">
+                    <Link href="/sponsor">
                       <Button variant="outline" size="sm" className="mt-3" data-testid="button-first-donation">
                         Make your first donation
                       </Button>
@@ -287,14 +266,27 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {yearTotal > 0 ? (
+                {preferences?.taxDocumentsVisible === false ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Tax documents are not available for your account
+                  </p>
+                ) : yearTotal > 0 ? (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                       <div>
                         <p className="font-medium">{currentYear} Summary</p>
                         <p className="text-sm text-muted-foreground">${yearTotal.toFixed(2)} total</p>
                       </div>
-                      <Button size="sm" variant="outline" data-testid="button-download-tax">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          if (user) {
+                            window.open(`/api/donations/tax-document/${user.id}?year=${currentYear}`, "_blank");
+                          }
+                        }}
+                        data-testid="button-download-tax"
+                      >
                         <Download className="h-4 w-4 mr-1" />
                         PDF
                       </Button>

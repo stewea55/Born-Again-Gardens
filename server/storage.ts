@@ -8,6 +8,7 @@ import {
   userPreferences,
   cartItems,
   socialPosts,
+  transactions,
   type User,
   type UpsertUser,
   type Plant,
@@ -20,6 +21,8 @@ import {
   type InsertUserPreferences,
   type CartItem,
   type InsertCartItem,
+  type Transaction,
+  type InsertTransaction,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -47,9 +50,11 @@ export interface IStorage {
   getDonations(): Promise<Donation[]>;
   getDonationsByUser(userId: string): Promise<Donation[]>;
   createDonation(donation: InsertDonation): Promise<Donation>;
+  updateDonation(id: number, donation: Partial<InsertDonation>): Promise<Donation | undefined>;
 
   // User Preferences
   getUserPreferences(userId: string): Promise<UserPreferences | undefined>;
+  getAllUserPreferences(): Promise<UserPreferences[]>;
   upsertUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences>;
 
   // Cart
@@ -171,6 +176,15 @@ export class DatabaseStorage implements IStorage {
     return newDonation;
   }
 
+  async updateDonation(id: number, donation: Partial<InsertDonation>): Promise<Donation | undefined> {
+    const [updated] = await db
+      .update(donations)
+      .set(donation)
+      .where(eq(donations.id, id))
+      .returning();
+    return updated;
+  }
+
   // User Preferences
   async getUserPreferences(userId: string): Promise<UserPreferences | undefined> {
     const [prefs] = await db
@@ -178,6 +192,10 @@ export class DatabaseStorage implements IStorage {
       .from(userPreferences)
       .where(eq(userPreferences.userId, userId));
     return prefs;
+  }
+
+  async getAllUserPreferences(): Promise<UserPreferences[]> {
+    return db.select().from(userPreferences);
   }
 
   async upsertUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences> {
@@ -225,6 +243,12 @@ export class DatabaseStorage implements IStorage {
   async clearCart(sessionId: string): Promise<boolean> {
     await db.delete(cartItems).where(eq(cartItems.sessionId, sessionId));
     return true;
+  }
+
+  // Transactions
+  async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
+    const [newTransaction] = await db.insert(transactions).values(transaction).returning();
+    return newTransaction;
   }
 }
 

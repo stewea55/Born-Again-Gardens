@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PlantCard } from "@/components/plant-card";
+import { PlantDetailModal } from "@/components/plant-detail-modal";
 import { ChevronLeft, ChevronRight, Leaf } from "lucide-react";
 import { useState } from "react";
-import type { Plant } from "@shared/schema";
+import { useCart } from "@/contexts/cart-context";
+import type { Plant, PlantCategory } from "@shared/schema";
 
 interface HarvestCalendarProps {
   plants: Plant[];
@@ -50,18 +52,26 @@ function isInHarvestWindow(plant: Plant, monthIndex: number): boolean {
   }
 }
 
-const categoryColors: Record<string, string> = {
-  fruit: "bg-red-500",
-  vegetable: "bg-green-500",
-  herb: "bg-purple-500",
-  flower: "bg-pink-500",
+const categoryOrder: Record<PlantCategory, number> = {
+  fruit: 0,
+  vegetable: 1,
+  herb: 2,
+  flower: 3,
 };
 
 export function HarvestCalendar({ plants, onSelectMonth }: HarvestCalendarProps) {
   const currentMonth = new Date().getMonth();
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const { items: cartItems, addToCart, updateQuantity, removeItem } = useCart();
 
   const plantsInMonth = plants.filter((plant) => isInHarvestWindow(plant, selectedMonth));
+  const sortedPlants = [...plantsInMonth].sort((a, b) => {
+    const categoryDiff = (categoryOrder[a.category] ?? 99) - (categoryOrder[b.category] ?? 99);
+    if (categoryDiff !== 0) return categoryDiff;
+    return a.name.localeCompare(b.name);
+  });
 
   const handlePrev = () => {
     setSelectedMonth((prev) => (prev === 0 ? 11 : prev - 1));
@@ -69,6 +79,38 @@ export function HarvestCalendar({ plants, onSelectMonth }: HarvestCalendarProps)
 
   const handleNext = () => {
     setSelectedMonth((prev) => (prev === 11 ? 0 : prev + 1));
+  };
+
+  const handleViewDetails = (plant: Plant) => {
+    setSelectedPlant(plant);
+    setDetailOpen(true);
+  };
+
+  const handleAddToCart = async (plant: Plant, quantity: number = 1) => {
+    try {
+      if (plant.status !== "ready") {
+        return;
+      }
+
+      const existing = cartItems.find(
+        (item) => (item.plant?.id ?? item.plantId) === plant.id
+      );
+
+      if (quantity <= 0) {
+        if (existing) {
+          await removeItem(existing.id);
+        }
+        return;
+      }
+
+      if (existing) {
+        await updateQuantity(existing.id, quantity);
+      } else {
+        await addToCart(plant, quantity);
+      }
+    } catch (error) {
+      console.error("Failed to update cart quantity:", error);
+    }
   };
 
   return (
@@ -124,29 +166,29 @@ export function HarvestCalendar({ plants, onSelectMonth }: HarvestCalendarProps)
 
       <div>
         <h3 className="font-semibold text-lg mb-4">
-          Available in {months[selectedMonth]} ({plantsInMonth.length} varieties)
+          Available in {months[selectedMonth]} ({sortedPlants.length} varieties)
         </h3>
 
-        {plantsInMonth.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {plantsInMonth.map((plant) => (
-              <Card key={plant.id} className="hover-elevate" data-testid={`calendar-plant-${plant.id}`}>
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${categoryColors[plant.category] || "bg-gray-500"}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{plant.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {plant.harvestStart} - {plant.harvestEnd}
-                    </p>
-                  </div>
-                  {plant.status === "ready" && (
-                    <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 text-xs">
-                      Ready
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+        {sortedPlants.length > 0 ? (
+          <div className="grid grid-cols-3 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-6">
+            {sortedPlants.map((plant) => {
+              const existingItem = cartItems.find(
+                (item) => (item.plant?.id ?? item.plantId) === plant.id
+              );
+              const currentQuantity = existingItem
+                ? parseFloat(existingItem.quantity.toString())
+                : 0;
+
+              return (
+                <PlantCard
+                  key={plant.id}
+                  plant={plant}
+                  onViewDetails={handleViewDetails}
+                  onAddToCart={handleAddToCart}
+                  currentQuantity={currentQuantity}
+                />
+              );
+            })}
           </div>
         ) : (
           <Card className="text-center py-12">
@@ -160,6 +202,25 @@ export function HarvestCalendar({ plants, onSelectMonth }: HarvestCalendarProps)
           </Card>
         )}
       </div>
+
+      <PlantDetailModal
+        plant={selectedPlant}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        onAddToCart={(plant, quantity) => {
+          handleAddToCart(plant, quantity);
+        }}
+        currentQuantity={
+          selectedPlant
+            ? cartItems.find((item) => (item.plant?.id ?? item.plantId) === selectedPlant.id)
+              ? parseFloat(
+                  cartItems.find((item) => (item.plant?.id ?? item.plantId) === selectedPlant.id)!
+                    .quantity.toString()
+                )
+              : 0
+            : 0
+        }
+      />
     </div>
   );
 }

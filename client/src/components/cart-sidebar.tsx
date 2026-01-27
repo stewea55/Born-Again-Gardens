@@ -124,10 +124,10 @@ export function CartSidebar({ items, onUpdateQuantity, onRemoveItem }: CartSideb
 
       {items.length > 0 && (
         <CardFooter className="flex-col gap-2 pt-0">
-          <Link href="/donate" className="w-full">
+          <Link href="/basket" className="w-full">
             <Button className="w-full" data-testid="button-checkout">
-              <Heart className="h-4 w-4 mr-2" />
-              Make a Donation
+              <ShoppingBasket className="h-4 w-4 mr-2" />
+              View your Basket
             </Button>
           </Link>
         </CardFooter>
