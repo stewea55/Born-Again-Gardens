@@ -46,6 +46,10 @@ async function buildAll() {
   ];
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
+  // Add dotenv as external since it's imported but not in package.json dependencies
+  // Railway provides environment variables directly, so dotenv isn't needed in production
+  externals.push("dotenv", "dotenv/config");
+
   await esbuild({
     entryPoints: ["server/index.ts"],
     platform: "node",
