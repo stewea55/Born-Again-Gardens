@@ -1,0 +1,19 @@
+---
+description: Branding/layout source of truth for all UI text and styling
+alwaysApply: true
+---
+
+# Branding and layout rules
+
+- Before creating or changing any UI copy, colors, typography, header/footer, or layout, read and follow `Word doc/Layout and Branding Rules.md`.
+- Do not invent fonts, colors, or formatting that are not listed in that doc.
+- Typography rules:
+  - Title (#): Libre Baskerville Bold
+  - Subheading (##): Poppins
+  - Paragraph (###): Poppins
+  - Subtitle (####): Cormorant Garamond italics
+  - Titles and subheadings are centered unless otherwise instructed
+- Colors: use the palette listed in the doc; background is Parchment unless otherwise instructed.
+- Copy markup: *bold*, _italics_, `\\` for line breaks; <link> and <<button>> are used in the copy instructions but rendered without brackets.
+- Header/footer must use the standard content from the doc unless the doc or user explicitly instructs otherwise.
+- If a request conflicts with the doc, stop and ask the user which to follow.

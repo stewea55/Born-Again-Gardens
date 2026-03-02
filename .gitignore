@@ -1,0 +1,12 @@
+node_modules
+.next
+*.log
+.env
+.env.*
+# Environment variables - never commit
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local

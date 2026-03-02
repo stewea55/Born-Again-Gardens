@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+# Conflicts in markdown files
+
+When you encounter conflicts in markdown files (e.g. merge conflict markers, or two versions of the same or similar content):
+
+1. **Do not** guess, bypass the conflict, or give one file or side more weight than the other.
+2. **Explain what the conflict is** — describe what differs and between which sides or sources, so the user understands.
+3. **Explicitly ask** the user what changes they would like to make.
+4. **Proceed** only after the user has told you what they want; then apply their choices.

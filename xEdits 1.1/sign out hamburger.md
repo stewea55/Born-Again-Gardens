@@ -1,0 +1,1 @@
+I need a sign out button that becomes visible in the hamburger menu once a user is signed in. This button needs to sign the user out and return them to the home page. 

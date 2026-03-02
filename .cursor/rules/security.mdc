@@ -1,0 +1,7 @@
+# Security (EPE)
+
+- **New table:** Before merging, enable RLS and add policies (by user_id, company_id, or admin). No sensitive table without RLS.
+- **New API route:** If it returns sensitive data PII, check session and role in the route before calling the business layer. No bypass unless documented in API.md and using service role in a single, audited place.
+- **PII:** Do not log or send raw PII (names, emails, addresses) to logs, error monitoring, or third parties. When adding a field or API, ask: could this be PII? If yes, apply RLS and no-log policy.
+- **Credentials:** DB and API keys only in env vars (server-side). Never in frontend or repo. .gitignore already covers .env*.
+- **Check Security-Checklist.md:** When adding a new table or API route, check Security-Checklist.md for the checklist and quick leak-check questions and ensure the change is compliant. When in doubt, also check it.

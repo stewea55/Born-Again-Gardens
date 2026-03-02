@@ -1,0 +1,11 @@
+---
+description: Supabase RLS policies — do not change without explicit notice
+alwaysApply: true
+---
+
+# Supabase RLS policies
+
+- **Do not change, add, or remove RLS policies in Supabase** unless the user explicitly asks for it. The user has invested in configuring these policies; respect that.
+- **If a change to RLS is required** (e.g. to support a new feature or fix access): **propose the change explicitly** and **tell the user** what would change and why. Do not apply RLS changes silently. Let the user approve or perform the change themselves.
+- **When adding a new table:** Security.mdc still requires RLS and policies for new tables. For **existing** tables, assume policies are intentional; do not "fix" or refactor them without user approval.
+- **Reference:** Security-Checklist.md and Project-Decisions.md (Database / RLS) describe the intended access model; use them to understand policy intent, not to overwrite existing policies in Supabase.

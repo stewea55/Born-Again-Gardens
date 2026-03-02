@@ -1,0 +1,20 @@
+---
+description: Store created plans in the project plans folder with summary and date
+alwaysApply: true
+---
+
+# Plan storage
+
+When creating a plan (for the user or as part of a task):
+
+1. **Save the plan to the project's `plans/` folder** (at repo root). Create the folder if it does not exist.
+
+2. **Each stored plan must include:**
+   - **Date:** Creation date in `YYYY-MM-DD` format (e.g. at the top or in frontmatter).
+   - **Summary:** A short overview of what the plan covers (one to three sentences), so the user can scan and track plans without opening the full file.
+
+3. **File naming:** Use a clear, kebab-case filename that describes the plan (e.g. `cement-web-app-decisions.md`, `auth-flow-implementation.md`). If the plan is created from a Cursor plan tool, copy or export the content into `plans/<name>.md` with the date and summary added.
+
+4. **Keep plans trackable:** The `plans/` folder is the single place for plan documents the user can see. When updating or completing a plan, update the stored file or add a note with the completion date; do not remove the summary or original date.
+
+5. **If the user asks where plans are:** Direct them to the `plans/` folder at the project root.

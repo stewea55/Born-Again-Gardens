@@ -1,0 +1,12 @@
+---
+description: Backend-ready structure so we can split to a separate server later
+alwaysApply: true
+---
+
+# Backend structure
+
+- **Supabase = source of truth.** All persisted state (auth, DB, storage) lives in Supabase. No duplicate source-of-truth elsewhere.
+- **Business logic in one place.** Domain logic lives in `lib/` (or `server/core/`). Files there **must not** import Next.js request/response types or `next/*` APIs.
+- **Thin API layer.** API routes (or App Router route handlers) only: parse request → call business layer → return response. No business logic inside route files.
+- **Small data surface.** All Supabase/client access goes through `lib/supabase` (or `lib/db`). Business logic calls these; routes call business logic.
+- **Session from the top.** Auth/session is read in the route (or middleware); pass user/session **into** the business layer as plain data. Business logic never calls `getServerSession` or Next-specific auth.

@@ -1,0 +1,24 @@
+---
+description: Log all code and decisions into project md files with date logs
+alwaysApply: true
+---
+
+# Decision and code logging
+
+Whenever we write any code or make any type of decision (product, technical, or "for now"):
+
+1. **Sort it into one of the existing project md files** (see Filing-Checklist.md for where each topic goes):
+   - **Project-Decisions.md** — Locked-in decisions (auth, flows, scheduling, etc.). Add or update the relevant section; include a **Date:** line (e.g. `**Date:** 2025-01-29`) when adding or changing a decision.
+   - **Push-to-Production.md (p2p)** — Steps required before go-live (backups, staging, Sentry, secrets, etc.). Add a chapter with **Date:** in the chapter; update the Summary with a checkbox.
+   - **Post-Production_Upgrades.md** — Upgrades for scaling/security/UX after launch. Add a chapter with **Date:**; update the Summary.
+   - **Potential-Features.md** — Undecided items or "decision for later." Add a chapter with **Date:**; update the Summary.
+   - **Old-Features-Changed.md** — When we change or drop something that was in Project-Decisions or Potential-Features: add one line to the Log with **date and short reason** (e.g. `- 2025-01-29: Removed X; reason. See Project-Decisions.`). Update or remove the item from the source file.
+   - **API.md** — When we add or change API design (our routes or third-party usage). Add or update the section with **Date:**.
+
+2. **Keep date logs:** For any new chapter or new bullet we add, include the date (YYYY-MM-DD) — either as a **Date:** line in the chapter or as part of the log entry in Old-Features-Changed.
+
+3. **Use Filing-Checklist.md** as the one-place reference for "which file does this go in?" when in doubt.
+
+4. **If it's unclear which file to use:** Don't guess. Ask the user which file (or files) the decision or change belongs in before adding or updating anything.
+
+5. **When Project-Decisions.md is updated:** Also update **Project-Simple-Decisions.md** so it stays in sync. Project-Simple-Decisions is a simplified summary for non-technical readers (explain like for a 5th grader): same section headings as Project-Decisions, but only 1–2 sentences per section. Less detail, same structure. Keep it dynamic — every time you add or change something in Project-Decisions, add or change the matching part in Project-Simple-Decisions.

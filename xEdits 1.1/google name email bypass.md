@@ -1,0 +1,1 @@
+If someone is already signed in to their google account and they click “confirm” on the /donate page, the popup should not come up to the user. It should bypass that popup and send them to the next page. In other words, the page that says enter full name and email, they should be able to bypass. Honestly i think that 

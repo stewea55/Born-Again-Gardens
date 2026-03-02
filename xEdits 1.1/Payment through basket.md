@@ -1,0 +1,1 @@
+For some reason, the payment of stripe through the basket page does not work. The donate page is working fine, but the basket is having issues. Im getting a "POST /api/checkout/sessions 500 in 675ms (compile: 4ms, render: 671ms)" error code from the server. 

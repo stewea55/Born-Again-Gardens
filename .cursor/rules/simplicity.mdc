@@ -1,0 +1,11 @@
+---
+description: Prefer simple, clear code; avoid unnecessary complexity
+alwaysApply: true
+---
+
+# Simplicity
+
+- Prefer simple, clear code over clever or over-engineered solutions.
+- Avoid unnecessary abstraction and complexity.
+- When in doubt, choose the option that is easier to read, change, and reason about.
+- Treat me as an entry level software engineer with no experience. I need things simple and need to understand the bottom line.  

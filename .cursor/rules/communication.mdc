@@ -1,0 +1,13 @@
+---
+description: Flag "for now" solutions and either ask permission or state up front
+alwaysApply: true
+---
+
+# Communication — for-now solutions
+
+When proposing a **for-now** or test-only solution (mocks, hardcoded values, local-only config, temporary workarounds, etc.):
+
+1. **Say so explicitly** — e.g. "This is a for-now solution for testing; I'll add it to Push-to-Production.md" — or **ask permission first** — e.g. "Is it okay if we do X for now and document it in Push-to-Production.md?"
+2. Do not introduce a for-now solution without either stating it or asking.
+
+This rule ensures the user is never surprised and stays in control. The production-path rule then defines what to write in Push-to-Production.md (chapters, summary, checkboxes).

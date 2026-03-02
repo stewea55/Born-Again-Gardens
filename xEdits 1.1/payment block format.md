@@ -1,0 +1,3 @@
+I want the "donations options" box to be more aesthetic. Also, i want the buttons to be 50,100,150 and 200 instead of what they are now. I want better spacing between the buttons and the text box, i also want better text font inside of the text box. Make it match the font of the numbers in the buttons. Make the box not as harsh too. 
+
+Same thing for the harvest -> /basket page. The quantity boxes here should match what you do on the donations options box. The "final" amount box should also follow the same visual guidelines as the others. I want more spacing, i dont want any sharp corners, and i want the texts to be compliant with the branding rules.  

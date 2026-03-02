@@ -1,0 +1,19 @@
+---
+description: Track "for now" solutions and path to production in Push-to-Production.md
+alwaysApply: true
+---
+
+# Production path
+
+Whenever we add a "for now" or test-only solution (mocks, hardcoded values, local-only config, etc.):
+
+1. **Update `Push-to-Production.md`** (at project root):
+   - Add a new chapter (in timeline order) with:
+     - **What we did (simple):** One sentence in plain language.
+     - **Why it matters:** Short, dumbed-down reason.
+     - **What to do for production:** Concrete steps.
+     - **Reasoning:** Technical explanation (high school–college level): what's going on, why we did it this way, how it fits the system, and why the production steps matter. This is where the learning lives — don't shy away from technical detail here.
+     - **Done:** `[ ]` — Check when you've made this production-ready.
+   - Update the **Summary** at the end: add the new item in the right place as a checkbox `- [ ]`. Order = order of work; security before performance.
+
+2. Keep the file visible and scannable: one file, chapters like a book, summary as the ordered checklist for when it's time to push to production.
