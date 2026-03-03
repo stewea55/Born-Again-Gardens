@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
@@ -17,6 +18,7 @@ export default function PaymentClient() {
   const [context, setContext] = useState(null);
   const [status, setStatus] = useState("");
   const [guest, setGuest] = useState({ full_name: "", email: "" });
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [readyForCheckout, setReadyForCheckout] = useState(false);
   const [checkoutPayload, setCheckoutPayload] = useState(null);
 
@@ -69,7 +71,8 @@ export default function PaymentClient() {
       entry_mode: context.entry_mode,
       payment_amount: Number(context.payment_amount || 0),
       donation_amount: Number(context.donation_amount || 0),
-      checkout_context: context.checkout_context || {}
+      checkout_context: context.checkout_context || {},
+      privacy_accepted: true
     };
     if (context.entry_mode === "guest") {
       if (!guest.full_name.trim() || !guest.email.trim()) return null;
@@ -85,6 +88,10 @@ export default function PaymentClient() {
   }, [context, guest]);
 
   const proceedToCheckout = () => {
+    if (!privacyAccepted) {
+      setStatus("Please accept the Privacy Policy to continue.");
+      return;
+    }
     const payload = buildPayload();
     if (!payload) {
       if (context?.entry_mode === "guest") {
@@ -207,6 +214,18 @@ export default function PaymentClient() {
           </p>
         </div>
       )}
+
+      <label className="paragraph" style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 16 }}>
+        <input
+          type="checkbox"
+          checked={privacyAccepted}
+          onChange={(e) => setPrivacyAccepted(e.target.checked)}
+          aria-label="I agree to the Privacy Policy"
+        />
+        <span>
+          I agree to the <Link href="/privacy" className="link">Privacy Policy</Link>.
+        </span>
+      </label>
 
       <div className="button-row" style={{ justifyContent: "flex-start" }}>
         <button type="button" className="button" onClick={proceedToCheckout}>

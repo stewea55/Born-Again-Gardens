@@ -1,4 +1,5 @@
 Last updated: 2026-03-02
+
 1. Who we are
 
 Born Again Gardens is an independent 501(c)(3) nonprofit organization.
@@ -123,7 +124,7 @@ Requests may be made by contacting us.
 
 We use reasonable administrative, technical, and organizational safeguards to protect information. No system is completely secure, and we cannot guarantee absolute security.
 
-8. Children’s privacy
+8. Children's privacy
 
 This site is not directed to children under 13. We do not knowingly collect personal information from children under 13.
 

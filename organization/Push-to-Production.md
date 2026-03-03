@@ -200,6 +200,25 @@ Pre-launch checklist. Each chapter is something that must be done or verified be
 
 ---
 
+## 12. Privacy, terms, and cookie policies
+
+**Date:** 2026-03-02
+
+**What we did (simple):** We drafted Privacy Policy, Terms and Conditions, and Cookie Policy documents that match how the site actually collects, uses, and shares data.
+
+**Why it matters:** Users must understand how their data is handled, and Stripe requires a privacy policy URL for checkout.
+
+**What to do for production:**
+- Review the policies for accuracy and legal fit.
+- Publish the policies at stable URLs (e.g. `/privacy`, `/terms`, `/cookies`).
+- Link them in the site footer and at checkout where users must accept the privacy policy.
+
+**Reasoning:** Clear policies build trust and are required by payment processors and expected by users. Stable URLs keep checkout and compliance references consistent.
+
+**Done:** [ ]
+
+---
+
 ## Summary (pre-launch checklist)
 
 Order = order of work; security before performance.
@@ -215,3 +234,4 @@ Order = order of work; security before performance.
 - [ ] Delete profile: confirm minimal vs full account deletion; add retention notice if keeping minimal (see chapter 9)
 - [ ] Switch Stripe from test keys/webhooks to live production keys/webhooks (see chapter 10)
 - [ ] Admin dashboard: storage bucket/policies, admin-only access checks, and audit logging (see chapter 11)
+- [ ] Publish privacy, terms, and cookie policy pages and link them (see chapter 12)

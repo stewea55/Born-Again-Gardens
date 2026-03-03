@@ -47,6 +47,13 @@ export default function Footer() {
           <p className="paragraph">
             © 2026 Born Again Gardens, Inc. All Rights Reserved. Design &amp; Development by Sterling Levi LLC
           </p>
+          <p className="footer-legal-links">
+            <Link href="/privacy">Privacy Policy</Link>
+            <span className="footer-legal-sep"> · </span>
+            <Link href="/terms">Terms and Conditions</Link>
+            <span className="footer-legal-sep"> · </span>
+            <Link href="/cookies">Cookie Policy</Link>
+          </p>
         </div>
       </div>
     </footer>

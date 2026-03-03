@@ -1,4 +1,5 @@
 Last updated: 2026-03-02
+
 1. Overview
 
 This Cookie Policy explains how Born Again Gardens uses cookies and similar technologies on this website.
@@ -44,4 +45,4 @@ You may control cookies through your browser settings. Disabling certain technol
 
 6. Changes
 
-We may update this Cookie Policy as our services evolve. The “Last updated” date reflects the current version.
+We may update this Cookie Policy as our services evolve. The "Last updated" date reflects the current version.

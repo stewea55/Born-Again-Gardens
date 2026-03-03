@@ -1,4 +1,5 @@
 Last updated: 2026-03-02
+
 1. Agreement
 
 By using this site, you agree to these Terms and our Privacy Policy.
@@ -33,7 +34,7 @@ Third-party services such as Stripe, Supabase, and Google operate under their ow
 
 8. Disclaimer
 
-The site is provided “as is” without warranties of any kind.
+The site is provided "as is" without warranties of any kind.
 
 Content related to gardening or plant practices is for informational purposes only.
 
