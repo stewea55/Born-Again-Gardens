@@ -127,3 +127,12 @@
 - **Basket disclaimer:** Basket page shows the disclaimer "Basket selections are for in-person harvest planning only and do not guarantee availability or quantity." below Payment Amount and above the Back to harvest / Confirm and checkout buttons.
 - **Checkout gate modal copy:** Removed the sentence "Closing this popup keeps you on this page." from the Continue to payment modal; it now only says "Choose one option to continue."
 - **Basket-flow payment checkbox:** When payment is reached from the basket flow (`flow_type === "basket"`), the payment page shows a required checkbox "I understand basket selections are for in-person harvest planning only." Users must check it to continue; otherwise they see a message. Donate and cart flows are unchanged and do not see this checkbox.
+
+**Date:** 2026-03-07
+
+- **Shop page first card placeholder:** When the shop has products, the first section card on `/shop` now shows an "Our shop" subheading so the card is never empty; the empty-state message and add-to-cart status behavior are unchanged.
+
+**Date:** 2026-03-07 (Zero-payment harvest flow)
+
+- **Basket $0 flow:** When the user sets Payment Amount to $0 and clicks Confirm and checkout, the sign-in popup does not appear. The client POSTs basket items to `/api/harvest/record-basket`, which records quantities via the existing `add_harvest_quantity` RPC (same as paid flow). On success, the basket is cleared and the user is redirected to `/harvested`. No DB schema or RLS changes; the new API uses the server Supabase client.
+- **Harvested page:** `/harvested` is a thank-you page with title "Thank you for visiting", copy thanking visitors and inviting them to consider volunteer opportunities (with link to `/volunteer`), and links back to harvest and home.

@@ -13,6 +13,7 @@ export default function BasketClient() {
   const [unitsByPlantId, setUnitsByPlantId] = useState({});
   const [finalAmount, setFinalAmount] = useState("0");
   const [gateOpen, setGateOpen] = useState(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -105,6 +106,27 @@ export default function BasketClient() {
 
   const handleConfirmCheckout = async () => {
     if (items.length === 0) return;
+    const parsedFinalAmount = Math.max(0, Number(finalAmount || 0));
+
+    if (parsedFinalAmount === 0) {
+      setStatus("");
+      const res = await fetch("/api/harvest/record-basket", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ basket_items: items })
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setStatus(data?.error?.message || "Could not record your basket. Please try again.");
+        return;
+      }
+      const supabase = getBrowserSupabaseClient();
+      await writeCart("harvest", [], supabase);
+      setItems([]);
+      router.push("/harvested");
+      return;
+    }
+
     const supabase = getBrowserSupabaseClient();
     const session = supabase ? (await supabase.auth.getSession()).data?.session : null;
     if (session?.user) {
@@ -172,6 +194,7 @@ export default function BasketClient() {
         <p className="paragraph">
           Basket selections are for in-person harvest planning only and do not guarantee availability or quantity.
         </p>
+        {status && <p className="paragraph">{status}</p>}
         <div className="button-row" style={{ justifyContent: "flex-start" }}>
           <button type="button" className="button secondary" onClick={() => router.push("/harvest")}>
             Back to harvest
