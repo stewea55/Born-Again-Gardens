@@ -28,7 +28,7 @@ export default function CheckoutGateModal({ open, onClose, onContinueGuest, onGo
       <div className="modal" onClick={(event) => event.stopPropagation()}>
         <h2 className="subheading">Continue to payment</h2>
         <p className="paragraph">
-          Choose one option to continue. Closing this popup keeps you on this page.
+          Choose one option to continue.
         </p>
         <div className="modal-actions">
           <button type="button" className="button" onClick={handleGoogleSignIn}>

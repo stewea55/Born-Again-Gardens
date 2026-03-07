@@ -10,8 +10,10 @@ import CheckoutGateModal from "./CheckoutGateModal";
 export default function BasketClient() {
   const router = useRouter();
   const [items, setItems] = useState([]);
+  const [unitsByPlantId, setUnitsByPlantId] = useState({});
   const [finalAmount, setFinalAmount] = useState("0");
   const [gateOpen, setGateOpen] = useState(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -30,6 +32,36 @@ export default function BasketClient() {
   useEffect(() => {
     setFinalAmount(recommendedAmount.toFixed(2));
   }, [recommendedAmount]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadUnits = async () => {
+      const plantIds = [...new Set(items.map((item) => Number(item?.item_id)).filter((id) => Number.isFinite(id)))];
+      if (plantIds.length === 0) {
+        if (active) setUnitsByPlantId({});
+        return;
+      }
+
+      const supabase = getBrowserSupabaseClient();
+      if (!supabase) return;
+
+      const { data } = await supabase.from("plant_catalog").select("id, unit").in("id", plantIds);
+      if (!active) return;
+
+      const map = {};
+      (data || []).forEach((row) => {
+        map[row.id] = row.unit || "";
+      });
+      setUnitsByPlantId(map);
+    };
+
+    loadUnits();
+
+    return () => {
+      active = false;
+    };
+  }, [items]);
 
   const persist = async (nextItems) => {
     setItems(nextItems);
@@ -74,6 +106,27 @@ export default function BasketClient() {
 
   const handleConfirmCheckout = async () => {
     if (items.length === 0) return;
+    const parsedFinalAmount = Math.max(0, Number(finalAmount || 0));
+
+    if (parsedFinalAmount === 0) {
+      setStatus("");
+      const res = await fetch("/api/harvest/record-basket", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ basket_items: items })
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setStatus(data?.error?.message || "Could not record your basket. Please try again.");
+        return;
+      }
+      const supabase = getBrowserSupabaseClient();
+      await writeCart("harvest", [], supabase);
+      setItems([]);
+      router.push("/harvested");
+      return;
+    }
+
     const supabase = getBrowserSupabaseClient();
     const session = supabase ? (await supabase.auth.getSession()).data?.session : null;
     if (session?.user) {
@@ -100,7 +153,8 @@ export default function BasketClient() {
                 </p>
                 <div className="basket-item-meta-row">
                   <p className="paragraph" style={{ marginBottom: 0 }}>
-                    <strong>Market price:</strong> ${Number(item.unit_price || 0).toFixed(2)}
+                    <strong>Market Price:</strong> ${Number(item.unit_price || 0).toFixed(2)} per{" "}
+                    {unitsByPlantId[item.item_id] || item.metadata?.unit || "item"}
                   </p>
                   <label className="paragraph basket-qty-inline" style={{ marginBottom: 0 }}>
                     Qty
@@ -123,11 +177,11 @@ export default function BasketClient() {
           </>
         )}
         <p className="paragraph">
-          <strong>Recommended amount:</strong> ${recommendedAmount.toFixed(2)}
+          <strong>Market Price:</strong> ${recommendedAmount.toFixed(2)}
         </p>
         <div className="payment-amount-input-wrap" style={{ marginTop: "16px" }}>
           <label className="paragraph">
-            Final amount (editable)
+            Payment Amount
             <input
               type="number"
               min="0"
@@ -137,6 +191,10 @@ export default function BasketClient() {
             />
           </label>
         </div>
+        <p className="paragraph">
+          Basket selections are for in-person harvest planning only and do not guarantee availability or quantity.
+        </p>
+        {status && <p className="paragraph">{status}</p>}
         <div className="button-row" style={{ justifyContent: "flex-start" }}>
           <button type="button" className="button secondary" onClick={() => router.push("/harvest")}>
             Back to harvest

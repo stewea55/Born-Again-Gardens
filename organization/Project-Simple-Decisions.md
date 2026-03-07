@@ -69,3 +69,17 @@ The admin dashboard link in the hamburger menu and the `/admin` page are only fo
 The sponsors editor now has a catalog + canvas in admin only. Logo and name are separate objects, so we can place, resize, and remove them independently. Clicking X removes only that object from the canvas, not the sponsor row in the database.
 The home sponsors section now only shows logo + company name from the last saved admin canvas layout, and visitors cannot edit it.
 The home page "Ready to Visit?" card (with the Create Account button) is only for people who are signed out. If someone is already signed in, that whole card is hidden.
+
+**Date:** 2026-03-07  
+On basket, wording now says Market Price and Payment Amount, and each plant line shows price per unit from the plant catalog.  
+On harvest, Add to basket and Confirm never show together: quantity 0 means Add (click-outside closes), quantity above 0 means Confirm (only Confirm closes and saves).  
+We removed temporary shop/payment wording and added a new homepage wishlist link card.
+
+**Date:** 2026-03-07 (Basket CYA)  
+We added a disclaimer on the basket page that selections are for in-person harvest planning only. We removed the "Closing this popup keeps you on this page" line from the sign-in popup. When someone pays from the basket flow, they must check a box saying they understand basket items are for in-person harvest planning only; donate and cart flows are unchanged.
+
+**Date:** 2026-03-07  
+On the shop page, when we have products the first card now shows "Our shop" so it’s never empty; the “still building” message still shows when there are no products.
+
+**Date:** 2026-03-07 (Zero-payment harvest)  
+If someone submits the basket with $0 payment, we don't show the sign-in popup. We record their harvest quantities in the database (same as when they pay), clear their basket, and send them to a thank-you page at /harvested that says thanks for visiting and suggests volunteering.

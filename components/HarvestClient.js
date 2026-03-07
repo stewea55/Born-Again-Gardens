@@ -156,7 +156,7 @@ export default function HarvestClient({ plants }) {
     setInitialModalQuantity(currentQuantity);
   };
 
-  const handleClosePlantModal = async () => {
+  const handleConfirmPlantModal = async () => {
     if (!selectedPlant || isSavingModal) return;
     if (Number(modalQuantity || 0) === Number(initialModalQuantity || 0)) {
       setSelectedPlant(null);
@@ -168,6 +168,13 @@ export default function HarvestClient({ plants }) {
       setSelectedPlant(null);
     } finally {
       setIsSavingModal(false);
+    }
+  };
+
+  const handleBackdropClick = () => {
+    if (isSavingModal) return;
+    if (Number(modalQuantity || 0) === 0) {
+      setSelectedPlant(null);
     }
   };
 
@@ -254,7 +261,7 @@ export default function HarvestClient({ plants }) {
       </section>
 
       {selectedPlant && (
-        <div className="modal-backdrop" role="dialog" aria-modal="true" onClick={() => void handleClosePlantModal()}>
+        <div className="modal-backdrop" role="dialog" aria-modal="true" onClick={handleBackdropClick}>
           <div className="modal harvest-modal" onClick={(event) => event.stopPropagation()}>
             <h3 className="subheading">{selectedPlant.name || `Plant ${selectedPlant.id}`}</h3>
             {hasDisplayValue(selectedPlant.image_url) && (
@@ -272,25 +279,35 @@ export default function HarvestClient({ plants }) {
             </div>
             <div className="modal-actions harvest-modal-actions">
               {modalQuantity > 0 ? (
-                <div className="harvest-quantity-toggle harvest-quantity-toggle-wide">
+                <>
+                  <div className="harvest-quantity-toggle harvest-quantity-toggle-wide">
+                    <button
+                      type="button"
+                      className="menu-button"
+                      onClick={() => setModalQuantity((value) => Math.max(0, Number(value || 0) - 1))}
+                      disabled={isSavingModal}
+                    >
+                      -
+                    </button>
+                    <p className="paragraph">Quantity: {modalQuantity}</p>
+                    <button
+                      type="button"
+                      className="menu-button"
+                      onClick={() => setModalQuantity((value) => Number(value || 0) + 1)}
+                      disabled={isSavingModal}
+                    >
+                      +
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    className="menu-button"
-                    onClick={() => setModalQuantity((value) => Math.max(0, Number(value || 0) - 1))}
+                    className="button harvest-add-button"
+                    onClick={() => void handleConfirmPlantModal()}
                     disabled={isSavingModal}
                   >
-                    -
+                    Confirm
                   </button>
-                  <p className="paragraph">Quantity: {modalQuantity}</p>
-                  <button
-                    type="button"
-                    className="menu-button"
-                    onClick={() => setModalQuantity((value) => Number(value || 0) + 1)}
-                    disabled={isSavingModal}
-                  >
-                    +
-                  </button>
-                </div>
+                </>
               ) : (
                 <button
                   type="button"
