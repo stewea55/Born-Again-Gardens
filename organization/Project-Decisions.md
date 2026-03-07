@@ -114,3 +114,16 @@
 - **Sponsors home rendering:** Home page "Our Generous Sponsors" now renders only logo + company name from the saved admin canvas layout. The home page is read-only and never shows editor controls.
 - **X remove behavior:** Clicking X removes only the selected canvas object (`layout.logo` or `layout.name`). If both objects are removed, `layout` becomes null and the sponsor is hidden on home. Sponsor rows are never deleted by canvas actions.
 - **Home auth CTA visibility:** Home page "Ready to Visit?" card (with Create Account button) is shown only to signed-out visitors. Signed-in users do not see that card.
+
+**Date:** 2026-03-07
+
+- **Basket copy and unit display:** Basket copy now uses "Market Price" for the basket total and "Payment Amount" for the editable checkout amount. Basket line items display `Market Price: $X.XX per unit`, with `unit` fetched from `public.plant_catalog` by plant id.
+- **Harvest modal confirm flow:** Harvest plant modal now uses split close behavior based on state. If quantity is 0 (Add to basket visible), users can close by clicking outside. If quantity is greater than 0 (Confirm visible), outside click is blocked and only Confirm closes + saves quantity.
+- **Shop and payment copy cleanup:** Removed temporary v1 `/shop` scaffold text, hid `View cart` on `/shop` for now, and removed `Flow:` wording from `/payment`.
+- **Home wishlist CTA:** Added a new homepage card between generous support and volunteer sections with the copy "Eager to support in a tangible way? checkout our wishlist" and `wishlist` linked to the MyRegistry URL.
+
+**Date:** 2026-03-07 (Basket CYA)
+
+- **Basket disclaimer:** Basket page shows the disclaimer "Basket selections are for in-person harvest planning only and do not guarantee availability or quantity." below Payment Amount and above the Back to harvest / Confirm and checkout buttons.
+- **Checkout gate modal copy:** Removed the sentence "Closing this popup keeps you on this page." from the Continue to payment modal; it now only says "Choose one option to continue."
+- **Basket-flow payment checkbox:** When payment is reached from the basket flow (`flow_type === "basket"`), the payment page shows a required checkbox "I understand basket selections are for in-person harvest planning only." Users must check it to continue; otherwise they see a message. Donate and cart flows are unchanged and do not see this checkbox.

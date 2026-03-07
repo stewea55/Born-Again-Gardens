@@ -219,6 +219,25 @@ Pre-launch checklist. Each chapter is something that must be done or verified be
 
 ---
 
+## 13. Shop "View cart" hidden (for-now)
+
+**Date:** 2026-03-07
+
+**What we did (simple):** We hid the `View cart` button on `/shop` while the shop page is still being finalized.
+
+**Why it matters:** This is a temporary UX choice. Before production, users should have a clear and visible cart path from shop.
+
+**What to do for production:**
+- Re-enable `View cart` on `/shop` once storefront flow is finalized.
+- Verify `/shop -> /cart -> /payment` for guest and signed-in checkout.
+- Confirm the shop empty-state message only appears when there are zero products.
+
+**Reasoning:** Hiding an entry-point button can reduce confusion during early build stages, but production needs a complete and discoverable checkout path.
+
+**Done:** [ ]
+
+---
+
 ## Summary (pre-launch checklist)
 
 Order = order of work; security before performance.
@@ -235,3 +254,4 @@ Order = order of work; security before performance.
 - [ ] Switch Stripe from test keys/webhooks to live production keys/webhooks (see chapter 10)
 - [ ] Admin dashboard: storage bucket/policies, admin-only access checks, and audit logging (see chapter 11)
 - [ ] Publish privacy, terms, and cookie policy pages and link them (see chapter 12)
+- [ ] Re-enable and verify `View cart` on `/shop` when storefront is finalized (see chapter 13)

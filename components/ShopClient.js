@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { getBrowserSupabaseClient } from "../lib/supabase/browser";
 import { readCart, writeCart } from "../lib/cart/client-cart";
 
@@ -22,6 +21,7 @@ export default function ShopClient({ products }) {
       })),
     [products]
   );
+  const hasProducts = normalizedProducts.length > 0;
 
   const addToCart = async (product) => {
     const supabase = getBrowserSupabaseClient();
@@ -54,48 +54,47 @@ export default function ShopClient({ products }) {
   return (
     <>
       <section className="section card">
-        <p className="paragraph">
-          This is the v1 functional `/shop` backbone page. It is intentionally simple while we build
-          your final UI vision.
-        </p>
-        <div className="button-row" style={{ justifyContent: "flex-start" }}>
-          <Link href="/cart" className="button">
-            View cart
-          </Link>
-        </div>
+        {!hasProducts && (
+          <p className="paragraph">
+            Sorry, we&apos;re still building out our shop. Come back soon to see exclusive Bornagain
+            products and merch!
+          </p>
+        )}
         {status && <p className="paragraph">{status}</p>}
       </section>
 
-      <section className="section">
-        <h2 className="subheading">Shop catalog</h2>
-        <div className="two-column">
-          {normalizedProducts.map((product) => (
-            <article key={product.id} className="card">
-              <h3 className="subheading" style={{ textAlign: "left" }}>
-                {product.productName}
-              </h3>
-              <p className="paragraph">
-                Price: ${Number(product.price || 0).toFixed(2)}
-                <br />
-                {product.description || product.details || "Product details coming soon."}
-              </p>
-              <label className="paragraph">
-                Size (optional)
-                <input
-                  type="text"
-                  value={selectedSizes[product.id] || ""}
-                  onChange={(event) =>
-                    setSelectedSizes((prev) => ({ ...prev, [product.id]: event.target.value }))
-                  }
-                />
-              </label>
-              <button type="button" className="button" onClick={() => addToCart(product)}>
-                Add to cart
-              </button>
-            </article>
-          ))}
-        </div>
-      </section>
+      {hasProducts && (
+        <section className="section">
+          <h2 className="subheading">Shop catalog</h2>
+          <div className="two-column">
+            {normalizedProducts.map((product) => (
+              <article key={product.id} className="card">
+                <h3 className="subheading" style={{ textAlign: "left" }}>
+                  {product.productName}
+                </h3>
+                <p className="paragraph">
+                  Price: ${Number(product.price || 0).toFixed(2)}
+                  <br />
+                  {product.description || product.details || "Product details coming soon."}
+                </p>
+                <label className="paragraph">
+                  Size (optional)
+                  <input
+                    type="text"
+                    value={selectedSizes[product.id] || ""}
+                    onChange={(event) =>
+                      setSelectedSizes((prev) => ({ ...prev, [product.id]: event.target.value }))
+                    }
+                  />
+                </label>
+                <button type="button" className="button" onClick={() => addToCart(product)}>
+                  Add to cart
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }
