@@ -173,7 +173,7 @@ Creates guest row, then Stripe Checkout Session (embedded), then transaction row
 
 ### `GET /api/checkout/session-status?session_id=cs_...`
 
-Retrieves Checkout Session from Stripe and returns status for the return page.
+Retrieves Checkout Session from Stripe and returns status for the return page. If Stripe reports the session as `complete`, this endpoint also calls `finalizeCheckoutByStripeId` (idempotent), so the transaction and `tree_dedications` (for dedicate flow) are updated when the user sees the success screen, even if the webhook has not run yet.
 
 - **Response:** `{ data: { status, customer_email, flow_type } }` — `status` is `complete` or `open`; `flow_type` is read from `transaction` by `stripe_id` (session id) so return UI can render flow-specific copy.
 

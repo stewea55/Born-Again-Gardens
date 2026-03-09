@@ -73,7 +73,7 @@ export default function PaymentReturnClient() {
         <h2 className="subheading">Thank you</h2>
         <p className="paragraph">
           {isDedicateTree
-            ? "Payment success! Our garden is honored by your unique dedication. Thank you for making it special!"
+            ? "Payment success! Our garden is honored to host your special dedication. Thank you for your contribution."
             : "Your payment was successful. We appreciate your support."}
         </p>
         {customerEmail && (
