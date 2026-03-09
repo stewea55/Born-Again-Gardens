@@ -56,7 +56,7 @@ export default function ShopClient({ products }) {
       <section className="section card">
         {!hasProducts && (
           <p className="paragraph">
-            Sorry, we&apos;re still building out our shop. Come back soon to see exclusive Bornagain
+            Sorry, we&apos;re still building out our shop. Come back soon to see exclusive Born Again
             products and merch!
           </p>
         )}

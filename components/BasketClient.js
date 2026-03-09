@@ -192,7 +192,7 @@ export default function BasketClient() {
           </label>
         </div>
         <p className="paragraph">
-          Basket selections are for in-person harvest planning only and do not guarantee availability or quantity.
+          Basket selections are for in-person harvesting only and do not guarantee availability or quantity.
         </p>
         {status && <p className="paragraph">{status}</p>}
         <div className="button-row" style={{ justifyContent: "flex-start" }}>
