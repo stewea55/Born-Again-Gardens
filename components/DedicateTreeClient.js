@@ -130,7 +130,7 @@ export default function DedicateTreeClient({ initialCampaign }) {
       }
       const publicUrl = payload?.data?.publicUrl || "";
       setForm((prev) => ({ ...prev, dedication_image: publicUrl }));
-      setStatus("Image uploaded.");
+      setStatus("Upload complete.");
     } catch (error) {
       setStatus(error.message || "Could not upload image.");
     } finally {
@@ -210,8 +210,8 @@ export default function DedicateTreeClient({ initialCampaign }) {
               <img src={imageUrl} alt="Dedicate a tree campaign" />
             </div>
           ) : null}
-          <p className="subtitle" style={{ textAlign: "center" }}>A Living Legacy</p>
-          <p className="paragraph">
+          <p className="subtitle" style={{ textAlign: "center", marginTop: "1rem" }}>A Living Legacy</p>
+          <p className="paragraph" style={{ marginTop: "1rem" }}>
             Dedicate a tree in honor of someone you love, in memory of someone you miss, or perhaps to
             celebrate a family or group you&apos;re proud of.
             <br />
@@ -231,48 +231,50 @@ export default function DedicateTreeClient({ initialCampaign }) {
             <strong>{Number(campaign?.quantity_remaining || 0)} trees remaining</strong>
           </p>
 
-          <label className="paragraph">
-            Full name
-            <input
-              type="text"
-              value={form.full_name}
-              onChange={(event) => setForm((prev) => ({ ...prev, full_name: event.target.value }))}
-            />
-          </label>
-          <label className="paragraph">
-            Email
-            <input
-              type="email"
-              value={form.email}
-              onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
-            />
-          </label>
-          <label className="paragraph">
-            Dedication text (max 200 characters)
+          <div className="dedicate-form-fields" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.25rem", marginTop: "1.5rem" }}>
+            <label className="paragraph" style={{ width: "100%", maxWidth: "22rem" }}>
+              Full name
+              <input
+                type="text"
+                value={form.full_name}
+                onChange={(event) => setForm((prev) => ({ ...prev, full_name: event.target.value }))}
+              />
+            </label>
+            <label className="paragraph" style={{ width: "100%", maxWidth: "22rem" }}>
+              Email
+              <input
+                type="email"
+                value={form.email}
+                onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
+              />
+            </label>
+          </div>
+
+          <div style={{ marginTop: "1.75rem" }}>
+            <label className="paragraph" style={{ display: "block" }}>
+              Dedication text (max 200 characters)
+            </label>
             <textarea
               value={form.dedication_text}
               onChange={(event) => setForm((prev) => ({ ...prev, dedication_text: event.target.value }))}
               maxLength={200}
-              rows={4}
+              rows={5}
+              style={{ width: "100%", boxSizing: "border-box", marginTop: "0.5rem", minHeight: "8rem" }}
             />
-          </label>
-          <p className="paragraph">{form.dedication_text.length}/200</p>
+            <p className="paragraph" style={{ marginTop: "0.5rem" }}>{form.dedication_text.length}/200</p>
+          </div>
 
-          <label className="paragraph">
-            Optional dedication image (JPG, PNG, WEBP, GIF up to 5MB)
-            <input type="file" accept="image/*" onChange={(event) => uploadImage(event.target.files?.[0])} />
-          </label>
-          {form.dedication_image ? (
-            <p className="paragraph">
-              Uploaded image:
-              <br />
-              <a className="link" href={form.dedication_image} target="_blank" rel="noreferrer">
-                {form.dedication_image}
-              </a>
-            </p>
-          ) : null}
+          <div style={{ marginTop: "1.75rem" }}>
+            <label className="paragraph">
+              Optional dedication image (JPG, PNG, WEBP, GIF up to 5MB)
+              <input type="file" accept="image/*" onChange={(event) => uploadImage(event.target.files?.[0])} />
+            </label>
+            {form.dedication_image ? (
+              <p className="paragraph" style={{ marginTop: "0.5rem" }}>Upload complete.</p>
+            ) : null}
+          </div>
 
-          <div className="button-row" style={{ justifyContent: "flex-start" }}>
+          <div className="button-row" style={{ justifyContent: "flex-start", marginTop: "1.75rem" }}>
             <button
               type="button"
               className="button"

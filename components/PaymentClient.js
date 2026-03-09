@@ -181,9 +181,17 @@ export default function PaymentClient() {
     <section className="section card">
       <h1 className="title">Payment</h1>
       <p className="paragraph">
-        Payment total: ${summary.paymentAmount.toFixed(2)}
-        <br />
-        Donation portion: ${summary.donationAmount.toFixed(2)}
+        {context?.flow_type === "dedicate_tree" ? (
+          <>Payment amount: ${summary.paymentAmount.toFixed(2)}</>
+        ) : context?.flow_type === "donate" ? (
+          <>Donation amount: ${summary.paymentAmount.toFixed(2)}</>
+        ) : (
+          <>
+            Payment total: ${summary.paymentAmount.toFixed(2)}
+            <br />
+            Donation portion: ${summary.donationAmount.toFixed(2)}
+          </>
+        )}
       </p>
 
       {summary.entryMode === "guest" && (

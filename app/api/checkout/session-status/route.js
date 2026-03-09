@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "../../../../lib/checkout/stripe";
 import { getServerSupabaseClient } from "../../../../lib/supabase/server";
+import { finalizeCheckoutByStripeId } from "../../../../lib/checkout/pending";
 
 export async function GET(request) {
   try {
@@ -24,8 +25,12 @@ export async function GET(request) {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const status = session.status;
     const customerEmail = session.customer_details?.email ?? null;
-    const supabase = getServerSupabaseClient();
 
+    if (status === "complete") {
+      await finalizeCheckoutByStripeId({ stripeId: sessionId, status: "paid" });
+    }
+
+    const supabase = getServerSupabaseClient();
     let flowType = null;
     if (supabase) {
       const { data } = await supabase
