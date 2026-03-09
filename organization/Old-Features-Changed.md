@@ -10,3 +10,4 @@ When we change or drop something that was in Project-Decisions or Potential-Feat
 - **2026-03-01:** Renamed plant catalog pricing field from `suggested_donation` to `market_price`; updated harvest catalog fetch/render and docs to use the new field.
 - **2026-03-01:** Replaced admin design TBD with implemented `/admin` flow and corrected table reference from `other_catalog` to `shop_catalog` in decisions docs.
 - **2026-03-01:** Combined sponsor usage into single table `sponsors_public` for "Our Generous Sponsors"; added RLS (select anon/auth, all admin). Admin API generates UUID for new sponsor rows. See Form-API-to-DB and Project-Decisions.
+- **2026-03-09:** Volunteer upcoming events moved from `resources` (page/resource_type) to dedicated table `upcoming_events` with date, time, image, visibility. See Project-Decisions and Form-API-to-DB.

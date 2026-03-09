@@ -13,6 +13,16 @@ function normalizeForSearch(value) {
 function toInputValue(value, type) {
   if (value === null || value === undefined) return "";
   if (type === "json") return JSON.stringify(value);
+  if (type === "date") {
+    const s = String(value).trim();
+    if (!s) return "";
+    return s.slice(0, 10);
+  }
+  if (type === "time") {
+    const s = String(value).trim();
+    if (!s) return "";
+    return s.slice(0, 5);
+  }
   return String(value);
 }
 
@@ -32,6 +42,11 @@ function coerceValue(value, type) {
     } catch {
       return value;
     }
+  }
+  if (type === "date" || type === "time") {
+    if (value === null || value === undefined || value === "") return null;
+    const s = String(value).trim();
+    return s || null;
   }
   return value;
 }
@@ -309,6 +324,18 @@ export default function AdminTableEditor({
                           onChange={(event) => setDraftField(rowId, column.key, event.target.value, column.type)}
                           rows={4}
                         />
+                      ) : column.type === "date" ? (
+                        <input
+                          type="date"
+                          value={toInputValue(draft?.[column.key], column.type)}
+                          onChange={(event) => setDraftField(rowId, column.key, event.target.value, column.type)}
+                        />
+                      ) : column.type === "time" ? (
+                        <input
+                          type="time"
+                          value={toInputValue(draft?.[column.key], column.type)}
+                          onChange={(event) => setDraftField(rowId, column.key, event.target.value, column.type)}
+                        />
                       ) : (
                         <input
                           type={column.type === "number" ? "number" : "text"}
@@ -388,6 +415,18 @@ export default function AdminTableEditor({
                     value={toInputValue(newRow?.[column.key], column.type)}
                     onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
                     rows={3}
+                  />
+                ) : column.type === "date" ? (
+                  <input
+                    type="date"
+                    value={toInputValue(newRow?.[column.key], column.type)}
+                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
+                  />
+                ) : column.type === "time" ? (
+                  <input
+                    type="time"
+                    value={toInputValue(newRow?.[column.key], column.type)}
+                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
                   />
                 ) : (
                   <input

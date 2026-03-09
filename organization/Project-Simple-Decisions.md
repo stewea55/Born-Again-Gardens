@@ -26,7 +26,7 @@ Plant catalog pricing now uses `market_price` (same idea as before, new field na
 
 ## Database (Supabase)
 
-We keep everything in the public schema. Our tables (exact names in Supabase) are: hero_images, plant_catalog, profiles, user_preference, sponsors_public, sponsors_section_config, guests, transaction, harvest_quantity, resources, volunteers, shop_catalog. Guest checkouts go in the guests table. The sponsors table (sponsors_public) is for the home page "Our Generous Sponsors" only; anyone can see it, only admins can edit it. We turn on security (RLS) per table so only the right people can see or change data. Form-API-to-DB.md tracks which form fields go to which table and column.
+We keep everything in the public schema. Our tables (exact names in Supabase) are: hero_images, plant_catalog, profiles, user_preference, sponsors_public, sponsors_section_config, guests, transaction, harvest_quantity, resources, upcoming_events, volunteers, shop_catalog. Guest checkouts go in the guests table. The sponsors table (sponsors_public) is for the home page "Our Generous Sponsors" only; anyone can see it, only admins can edit it. We turn on security (RLS) per table so only the right people can see or change data. Form-API-to-DB.md tracks which form fields go to which table and column.
 
 **Date:** 2026-02-25  
 For profiles, new users get a profile row through the auth trigger, and RLS only allows inserting a row for your own user id.
@@ -61,7 +61,7 @@ The payment form appears on our payment page (Stripe Embedded Checkout). We crea
 
 **Date:** 2026-03-01  
 The admin page now has tabs to edit plants, users, guests, transactions, resources, shop rows, sponsors, and volunteer signups.  
-Volunteer upcoming events are now editable from admin and show as clickable bullets on the volunteer page.  
+Volunteer upcoming events are stored in their own table; admins can add events with date, time, image, and a visibility toggle. Only visible events show on the volunteer page as clickable bullets.  
 The home sponsors section now reads from the sponsors table, so logo changes in admin show on the site.
 
 **Date:** 2026-03-02  
@@ -69,6 +69,9 @@ The admin dashboard link in the hamburger menu and the `/admin` page are only fo
 The sponsors editor now has a catalog + canvas in admin only. Logo and name are separate objects, so we can place, resize, and remove them independently. Clicking X removes only that object from the canvas, not the sponsor row in the database.
 The home sponsors section now only shows logo + company name from the last saved admin canvas layout, and visitors cannot edit it.
 The home page "Ready to Visit?" card (with the Create Account button) is only for people who are signed out. If someone is already signed in, that whole card is hidden.
+
+**Date:** 2026-03-09  
+Volunteer upcoming events moved to a dedicated table with date, time, image, and visibility. Admins manage events in admin; only visible events appear on the volunteer page.
 
 **Date:** 2026-03-07  
 On basket, wording now says Market Price and Payment Amount, and each plant line shows price per unit from the plant catalog.  

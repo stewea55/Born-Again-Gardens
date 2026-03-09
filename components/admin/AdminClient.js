@@ -106,12 +106,18 @@ const ADMIN_TABS = [
   {
     id: "upcoming_events",
     label: "Upcoming Events",
-    description: "Create and publish volunteer upcoming events. Title appears as bullet text.",
+    description: "Create and publish volunteer upcoming events. Toggle visibility to show or hide on the volunteer page.",
     columns: [
-      { key: "title", label: "Event Title", type: "text" },
-      { key: "details", label: "Event Details", type: "text" }
+      { key: "event_name", label: "Event Name", type: "text" },
+      { key: "event_start_date", label: "Start Date", type: "date" },
+      { key: "event_end_date", label: "End Date", type: "date" },
+      { key: "event_start_time", label: "Start Time", type: "time" },
+      { key: "event_end_time", label: "End Time", type: "time" },
+      { key: "image_url", label: "Image URL", type: "text" },
+      { key: "additional_textbox", label: "Additional Text", type: "text" },
+      { key: "visibility", label: "Visible to users", type: "boolean" }
     ],
-    defaultNewRow: {}
+    defaultNewRow: { visibility: true }
   },
   {
     id: "sponsors_public",
