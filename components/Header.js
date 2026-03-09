@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about-us", label: "About Us" },
   { href: "/donate", label: "Donate" },
+  { href: "/dedicate", label: "Dedicate a Tree" },
   { href: "/sponsorships", label: "Sponsorships" },
   { href: "/shop", label: "Shop" },
   { href: "/volunteer", label: "Volunteer" },
@@ -72,6 +73,22 @@ export default function Header({ logoUrl }) {
     setMenuOpen(false);
   };
 
+  const handleDedicateTreeClick = (e) => {
+    setMenuOpen(false);
+    if (user) {
+      router.push("/dedicate");
+      return;
+    }
+    e.preventDefault();
+    const supabase = getBrowserSupabaseClient();
+    if (supabase) {
+      supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/dedicate` }
+      });
+    }
+  };
+
   const handleSignOut = async () => {
     const supabase = getBrowserSupabaseClient();
     if (supabase) await supabase.auth.signOut();
@@ -118,11 +135,22 @@ export default function Header({ logoUrl }) {
               aria-hidden="true"
             />
             <nav className="menu-panel" aria-label="Site">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) =>
+                link.href === "/dedicate" ? (
+                  <button
+                    key={link.href}
+                    type="button"
+                    className="menu-link-button"
+                    onClick={handleDedicateTreeClick}
+                  >
+                    {link.label}
+                  </button>
+                ) : (
+                  <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>
+                    {link.label}
+                  </Link>
+                )
+              )}
               {user ? (
                 <>
                   {isAdmin && (

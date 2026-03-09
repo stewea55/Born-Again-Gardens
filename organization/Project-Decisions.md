@@ -37,7 +37,7 @@
 ## Database (Supabase)
 
 - **Schema:** `public` for all app tables.
-- **Tables (exact Supabase names):** hero_images, plant_catalog, profiles, user_preference, sponsors_public, sponsors_section_config, sponsors_private, guests, transaction, harvest_quantity, resources, upcoming_events, volunteers, shop_catalog.
+- **Tables (exact Supabase names):** hero_images, plant_catalog, profiles, user_preference, sponsors_public, sponsors_section_config, sponsors_private, guests, transaction, harvest_quantity, resources, upcoming_events, volunteers, shop_catalog, tree_campaign, tree_dedications.
 - **Mapping:** Guest (flow/actor) maps to table **guests**. **sponsors_public** is the single table for "Our Generous Sponsors" (display only); RLS allows SELECT for anon and authenticated, and full access for authenticated admins. See [Form-API-to-DB.md](Form-API-to-DB.md) for form/API payload → table & column mapping. Guest form inputs map to guests columns.
 - **resources:** Additional images or files for the site; columns: id, resource_name, resource_type, image_url, page, created_at.
 - **RLS:** Enable per table as needed; add policies so the API respects who can read/write what.
@@ -137,3 +137,12 @@
 
 - **Basket $0 flow:** When the user sets Payment Amount to $0 and clicks Confirm and checkout, the sign-in popup does not appear. The client POSTs basket items to `/api/harvest/record-basket`, which records quantities via the existing `add_harvest_quantity` RPC (same as paid flow). On success, the basket is cleared and the user is redirected to `/harvested`. No DB schema or RLS changes; the new API uses the server Supabase client.
 - **Harvested page:** `/harvested` is a thank-you page with title "Thank you for visiting", copy thanking visitors and inviting them to consider volunteer opportunities (with link to `/volunteer`), and links back to harvest and home.
+
+**Date:** 2026-03-09 (Dedicate a Tree campaign)
+
+- **Route and auth:** Added `/dedicate` with a Google-only gate. Users must sign in with Google before they can access the dedication form. Guest checkout is not allowed for this flow.
+- **Campaign model:** Added `tree_campaign` (single-row settings/inventory) and `tree_dedications` (one submission per paid dedication). Quantity starts at 18 and decrements by 1 on successful webhook finalize.
+- **Pricing and validation:** Dedicate flow is fixed at `$350` and not editable by users. API creates Stripe sessions using server campaign price and rejects mismatched client amounts.
+- **Stock safety:** Webhook finalize uses a race-safe stock claim function (`claim_tree_campaign_unit`) before creating `tree_dedications` rows. If sold out during finalize, we mark transaction status `sold_out` and do not insert a dedication row.
+- **Home + return UX:** Home now shows a once-per-visit dedicate popup only when `quantity_remaining > 0`. Payment return now reads transaction `flow_type` and shows dedicated success copy for `dedicate_tree`.
+- **Admin visibility:** Admin now has `tree_campaign` and `tree_dedications` tabs for managing campaign settings and reviewing submissions (name, email, image, dedication text, payment confirmation).

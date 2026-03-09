@@ -60,6 +60,7 @@ export default function ShopClient({ products }) {
             products and merch!
           </p>
         )}
+        {hasProducts && <h2 className="subheading">Our shop</h2>}
         {status && <p className="paragraph">{status}</p>}
       </section>
 
