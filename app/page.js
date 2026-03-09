@@ -71,6 +71,20 @@ export default async function HomePage() {
 
       <section className="section card">
         <p className="paragraph">
+          Eager to support in a tangible way? checkout our{" "}
+          <Link
+            className="link"
+            href="https://www.myregistry.com/organization/born-again-gardens-cicero-in/5342709"
+            target="_blank"
+            rel="noreferrer"
+          >
+            wishlist
+          </Link>
+        </p>
+      </section>
+
+      <section className="section card">
+        <p className="paragraph">
           Eager to get your hands dirty?
           <br />
           Sign up to get information on{" "}

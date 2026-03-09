@@ -946,7 +946,13 @@ input[type="number"] {
 }
 
 .upcoming-event-item {
-  margin-bottom: 8px;
+  margin: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--sage);
+}
+
+.upcoming-event-item:first-child {
+  border-top: 1px solid var(--sage);
 }
 
 .upcoming-event-toggle {
@@ -960,6 +966,32 @@ input[type="number"] {
   padding: 0;
 }
 
+.upcoming-event-title {
+  margin: 0 0 10px 0;
+}
+
 .upcoming-event-details {
   margin-top: 6px;
+}
+
+.upcoming-event-image-wrap {
+  margin: 0 0 8px 0;
+}
+
+.upcoming-event-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.upcoming-event-when {
+  margin: 0 0 6px 0;
+}
+
+.upcoming-event-time {
+  margin: 0 0 6px 0;
+}
+
+.upcoming-event-additional {
+  margin: 0;
 }

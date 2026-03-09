@@ -213,7 +213,7 @@ Returns rows for the selected admin resource.
   - `shop_catalog`
   - `sponsors_public`
   - `volunteers`
-  - `upcoming_events` (mapped to `resources` where `page = 'volunteer'` and `resource_type = 'upcoming_event'`)
+  - `upcoming_events` (table `upcoming_events`)
 
 ### `POST /api/admin/:resource`
 
@@ -221,17 +221,14 @@ Creates or updates a row for the selected resource.
 
 - If payload includes the resource id, route updates the existing row.
 - If payload does not include id, route inserts a new row.
-- For `upcoming_events`, payload uses:
-  - `title` -> `resources.resource_name`
-  - `details` -> `resources.image_url`
-  - Fixed filters: `page = 'volunteer'`, `resource_type = 'upcoming_event'`
+- For `upcoming_events`, payload uses: `event_name`, `event_start_date`, `event_end_date`, `event_start_time`, `event_end_time`, `image_url`, `additional_textbox`, `visibility` (see Form-API-to-DB).
 
 ### `DELETE /api/admin/:resource`
 
 Deletes one row by id for the selected resource.
 
 - Request body: `{ "id": <row_id> }`
-- `upcoming_events` delete is constrained to volunteer event rows in `resources`.
+- `upcoming_events` delete removes the row by id from table `upcoming_events`.
 
 ### `POST /api/admin/upload`
 

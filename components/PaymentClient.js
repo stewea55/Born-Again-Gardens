@@ -19,6 +19,7 @@ export default function PaymentClient() {
   const [status, setStatus] = useState("");
   const [guest, setGuest] = useState({ full_name: "", email: "" });
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [basketDisclaimerAccepted, setBasketDisclaimerAccepted] = useState(false);
   const [readyForCheckout, setReadyForCheckout] = useState(false);
   const [checkoutPayload, setCheckoutPayload] = useState(null);
 
@@ -32,7 +33,6 @@ export default function PaymentClient() {
   const summary = useMemo(() => {
     if (!context) return null;
     return {
-      flowType: context.flow_type,
       entryMode: context.entry_mode,
       paymentAmount: Number(context.payment_amount || 0),
       donationAmount: Number(context.donation_amount || 0)
@@ -90,6 +90,10 @@ export default function PaymentClient() {
   const proceedToCheckout = () => {
     if (!privacyAccepted) {
       setStatus("Please accept the Privacy Policy to continue.");
+      return;
+    }
+    if (context?.flow_type === "basket" && !basketDisclaimerAccepted) {
+      setStatus("Please confirm that you understand basket selections are for in-person harvest planning only to continue.");
       return;
     }
     const payload = buildPayload();
@@ -177,8 +181,6 @@ export default function PaymentClient() {
     <section className="section card">
       <h1 className="title">Payment</h1>
       <p className="paragraph">
-        Flow: {summary.flowType}
-        <br />
         Payment total: ${summary.paymentAmount.toFixed(2)}
         <br />
         Donation portion: ${summary.donationAmount.toFixed(2)}
@@ -213,6 +215,20 @@ export default function PaymentClient() {
             Signed in as: {context?.google_user?.email || "Not detected yet"}
           </p>
         </div>
+      )}
+
+      {context?.flow_type === "basket" && (
+        <label className="paragraph" style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 16 }}>
+          <input
+            type="checkbox"
+            checked={basketDisclaimerAccepted}
+            onChange={(e) => setBasketDisclaimerAccepted(e.target.checked)}
+            aria-label="I understand basket selections are for in-person harvest planning only"
+          />
+          <span>
+            I understand basket selections are for in-person harvest planning only
+          </span>
+        </label>
       )}
 
       <label className="paragraph" style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 16 }}>

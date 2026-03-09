@@ -3,6 +3,8 @@ import UpcomingEvents from "../../components/UpcomingEvents";
 import HeroSection from "../../components/HeroSection";
 import { getUpcomingEvents } from "../../lib/upcoming-events";
 
+export const dynamic = "force-dynamic";
+
 export default async function VolunteerPage() {
   const events = await getUpcomingEvents();
 
