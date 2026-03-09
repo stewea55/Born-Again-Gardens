@@ -127,7 +127,6 @@ const ADMIN_TABS = [
       { key: "id", label: "ID (UUID)", type: "text" },
       { key: "company_name", label: "Company Name", type: "text" },
       { key: "tier", label: "Tier", type: "text" },
-      { key: "company_url", label: "Company URL", type: "text" },
       { key: "logo", label: "Logo URL", type: "text" }
     ],
     defaultNewRow: {}

@@ -96,7 +96,7 @@ export async function GET(request) {
   const [sponsorsResult, canvasResult] = await Promise.all([
     supabase
       .from("sponsors_public")
-      .select("id, company_name, tier, company_url, logo, layout, display_order, created_at")
+      .select("id, company_name, tier, logo, layout, display_order, created_at")
       .order("created_at", { ascending: false }),
     supabase
       .from("sponsors_section_config")
