@@ -6,6 +6,7 @@ import {
 } from "../../../../lib/checkout/pending";
 import { getStripeClient, getAppBaseUrl } from "../../../../lib/checkout/stripe";
 import { getAuthedServerSupabaseClient } from "../../../../lib/supabase/authed-server";
+import { getCurrentTreeCampaign } from "../../../../lib/dedicate/campaign";
 
 function errorResponse(code, message, status = 400, details = {}) {
   return NextResponse.json(
@@ -57,10 +58,38 @@ export async function POST(request) {
       }
     }
 
+    let amountCents = Math.round(input.payment_amount * 100);
+    let label = input.flow_type === "donate" ? "Donation" : "Garden payment";
+    if (input.flow_type === "dedicate_tree") {
+      if (input.entry_mode !== "google") {
+        return errorResponse("validation_failed", "Dedicate a tree requires Google sign-in.", 422);
+      }
+
+      const campaign = await getCurrentTreeCampaign();
+      if (!campaign || !campaign.active || Number(campaign.quantity_remaining || 0) <= 0) {
+        return errorResponse("sold_out", "Dedicate a tree is sold out.", 409);
+      }
+
+      const serverAmount = Number(campaign.price_per_tree || 0);
+      if (!Number.isFinite(serverAmount) || serverAmount <= 0) {
+        return errorResponse("campaign_invalid", "Dedicate a tree campaign price is not configured.", 500);
+      }
+
+      if (input.payment_amount !== serverAmount) {
+        return errorResponse(
+          "validation_failed",
+          "Dedicate a tree payment amount is fixed and did not match campaign price.",
+          422,
+          { expected: serverAmount, received: input.payment_amount }
+        );
+      }
+
+      amountCents = Math.round(serverAmount * 100);
+      label = "Tree dedication";
+    }
+
     const { guestId } = await createPendingCheckout(input);
-    const amountCents = Math.round(input.payment_amount * 100);
     const baseUrl = getAppBaseUrl();
-    const label = input.flow_type === "donate" ? "Donation" : "Garden payment";
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -78,7 +107,9 @@ export async function POST(request) {
           }
         }
       ],
-      ...(input.guest?.email && { customer_email: input.guest.email }),
+      ...((input.guest?.email || input.checkout_context?.email) && {
+        customer_email: input.guest?.email || input.checkout_context?.email
+      }),
       ...(input.flow_type === "donate" && { submit_type: "donate" })
     });
 
@@ -86,8 +117,10 @@ export async function POST(request) {
       sessionId: session.id,
       guestId,
       userId,
-      paymentAmount: input.payment_amount,
-      donationAmount: input.donation_amount ?? 0
+      paymentAmount: amountCents / 100,
+      donationAmount: input.donation_amount ?? 0,
+      flowType: input.flow_type,
+      checkoutContext: input.checkout_context
     });
 
     return NextResponse.json({

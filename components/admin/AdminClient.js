@@ -73,10 +73,41 @@ const ADMIN_TABS = [
       { key: "guest_name", label: "Guest Name", type: "text" },
       { key: "payment", label: "Payment", type: "number" },
       { key: "donation_amount", label: "Donation Amount", type: "number" },
+      { key: "flow_type", label: "Flow Type", type: "text" },
+      { key: "checkout_context", label: "Checkout Context (JSON)", type: "json" },
       { key: "status", label: "Status", type: "text" },
       { key: "stripe_id", label: "Stripe ID", type: "text" }
     ],
     defaultNewRow: {}
+  },
+  {
+    id: "tree_campaign",
+    label: "Tree Campaign",
+    description: "Manage Dedicate a Tree campaign inventory, active state, and price.",
+    columns: [
+      { key: "id", label: "ID", type: "number" },
+      { key: "total_quantity", label: "Total Quantity", type: "number" },
+      { key: "quantity_remaining", label: "Quantity Remaining", type: "number" },
+      { key: "active", label: "Active", type: "boolean" },
+      { key: "price_per_tree", label: "Price per Tree", type: "number" },
+      { key: "image_url", label: "Image URL", type: "text" }
+    ],
+    defaultNewRow: { active: true, price_per_tree: 350 }
+  },
+  {
+    id: "tree_dedications",
+    label: "Tree Dedications",
+    description: "View and update dedicate submissions and payment confirmation.",
+    columns: [
+      { key: "id", label: "ID", type: "number" },
+      { key: "transaction_id", label: "Transaction ID", type: "number" },
+      { key: "full_name", label: "Name", type: "text" },
+      { key: "email", label: "Email", type: "text" },
+      { key: "dedication_image", label: "Image URL", type: "text" },
+      { key: "dedication_text", label: "Dedication Text", type: "text" },
+      { key: "payment_confirmation", label: "Payment Confirmation", type: "text" }
+    ],
+    defaultNewRow: { payment_confirmation: "paid" }
   },
   {
     id: "resources",

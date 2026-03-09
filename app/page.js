@@ -2,14 +2,27 @@ import Link from "next/link";
 import HeroSection from "../components/HeroSection";
 import HomeReadyToVisitCard from "../components/HomeReadyToVisitCard";
 import { getPublicSponsorSectionLayout } from "../lib/sponsors";
+import DedicateTreePopup from "../components/DedicateTreePopup";
+import { getCurrentTreeCampaign } from "../lib/dedicate/campaign";
+import { getResourceImageUrl } from "../lib/resources";
 
 export default async function HomePage() {
-  const sponsorSection = await getPublicSponsorSectionLayout();
+  const [sponsorSection, campaign, dedicateImage] = await Promise.all([
+    getPublicSponsorSectionLayout(),
+    getCurrentTreeCampaign(),
+    getResourceImageUrl("dedicate_tree")
+  ]);
   const sponsors = sponsorSection.sponsors || [];
   const canvas = sponsorSection.canvas || { width: 1000, height: 500 };
+  const quantityRemaining = Number(campaign?.quantity_remaining || 0);
+  const campaignIsActive = Boolean(campaign?.active) && quantityRemaining > 0;
+  const campaignImageUrl = campaign?.image_url || dedicateImage || null;
 
   return (
     <>
+      {campaignIsActive ? (
+        <DedicateTreePopup quantityRemaining={quantityRemaining} imageUrl={campaignImageUrl} />
+      ) : null}
       <HeroSection
         page="home"
         title="Something is Blooming in our Community"

@@ -26,7 +26,7 @@ Plant catalog pricing now uses `market_price` (same idea as before, new field na
 
 ## Database (Supabase)
 
-We keep everything in the public schema. Our tables (exact names in Supabase) are: hero_images, plant_catalog, profiles, user_preference, sponsors_public, sponsors_section_config, guests, transaction, harvest_quantity, resources, upcoming_events, volunteers, shop_catalog. Guest checkouts go in the guests table. The sponsors table (sponsors_public) is for the home page "Our Generous Sponsors" only; anyone can see it, only admins can edit it. We turn on security (RLS) per table so only the right people can see or change data. Form-API-to-DB.md tracks which form fields go to which table and column.
+We keep everything in the public schema. Our tables (exact names in Supabase) are: hero_images, plant_catalog, profiles, user_preference, sponsors_public, sponsors_section_config, guests, transaction, harvest_quantity, resources, upcoming_events, volunteers, shop_catalog, tree_campaign, and tree_dedications. Guest checkouts go in the guests table. The sponsors table (sponsors_public) is for the home page "Our Generous Sponsors" only; anyone can see it, only admins can edit it. We turn on security (RLS) per table so only the right people can see or change data. Form-API-to-DB.md tracks which form fields go to which table and column.
 
 **Date:** 2026-02-25  
 For profiles, new users get a profile row through the auth trigger, and RLS only allows inserting a row for your own user id.
@@ -86,3 +86,6 @@ On the shop page, when we have products the first card now shows "Our shop" so i
 
 **Date:** 2026-03-07 (Zero-payment harvest)  
 If someone submits the basket with $0 payment, we don't show the sign-in popup. We record their harvest quantities in the database (same as when they pay), clear their basket, and send them to a thank-you page at /harvested that says thanks for visiting and suggests volunteering.
+
+**Date:** 2026-03-09 (Dedicate a Tree)  
+We added a new `/dedicate` page where people can dedicate a tree, but this path is Google sign-in only (no guest checkout). The tree price is fixed at $350, we only show the home popup while trees are still available, and admins can now view/manage campaign settings plus dedication submissions.

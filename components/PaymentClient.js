@@ -140,7 +140,7 @@ export default function PaymentClient() {
       <section className="section card">
         <h1 className="title">Payment</h1>
         <p className="paragraph">
-          No payment context found yet. Please start from `/shop`, `/basket`, or `/donate`.
+          No payment context found yet. Please start from `/shop`, `/basket`, `/donate`, or `/dedicate`.
         </p>
       </section>
     );

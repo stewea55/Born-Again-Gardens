@@ -9,6 +9,7 @@ export default function PaymentReturnClient() {
   const sessionId = searchParams.get("session_id");
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
+  const [flowType, setFlowType] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -25,6 +26,7 @@ export default function PaymentReturnClient() {
         }
         setStatus(json.data.status);
         setCustomerEmail(json.data.customer_email || "");
+        setFlowType(json.data.flow_type || "");
       })
       .catch(() => setError("Could not load payment status."));
   }, [sessionId]);
@@ -65,11 +67,14 @@ export default function PaymentReturnClient() {
   }
 
   if (status === "complete") {
+    const isDedicateTree = flowType === "dedicate_tree";
     return (
       <section className="section card">
         <h2 className="subheading">Thank you</h2>
         <p className="paragraph">
-          Your payment was successful. We appreciate your support.
+          {isDedicateTree
+            ? "Payment success! Our garden is honored by your unique dedication. Thank you for making it special!"
+            : "Your payment was successful. We appreciate your support."}
         </p>
         {customerEmail && (
           <p className="paragraph">

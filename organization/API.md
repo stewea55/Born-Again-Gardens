@@ -164,11 +164,18 @@ Creates guest row, then Stripe Checkout Session (embedded), then transaction row
 - For `google`, frontend resolves profile info and submits to checkout payload.
 - **Response (success):** `{ data: { client_secret, return_url, status } }` — frontend uses `client_secret` with Stripe Embedded Checkout; after payment Stripe redirects to `return_url` (e.g. `/payment/return?session_id=...`).
 
+**Date:** 2026-03-09 (dedicate campaign update)
+
+- Added `flow_type: dedicate_tree`.
+- `dedicate_tree` is Google-only (`entry_mode` must be `google`).
+- For `dedicate_tree`, server validates campaign availability (`tree_campaign.quantity_remaining > 0`) and uses server price for Stripe amount (fixed campaign price, currently `$350`), not client-supplied amount.
+- Saves `transaction.flow_type` and `transaction.checkout_context` during session creation.
+
 ### `GET /api/checkout/session-status?session_id=cs_...`
 
 Retrieves Checkout Session from Stripe and returns status for the return page.
 
-- **Response:** `{ data: { status, customer_email } }` — `status` is `complete` or `open`; `customer_email` from session when available.
+- **Response:** `{ data: { status, customer_email, flow_type } }` — `status` is `complete` or `open`; `flow_type` is read from `transaction` by `stripe_id` (session id) so return UI can render flow-specific copy.
 
 ### `POST /api/stripe/webhook`
 
@@ -176,6 +183,25 @@ Verifies Stripe webhook signature and finalizes `transaction.status` by `stripe_
 
 - `checkout.session.completed` -> `paid`
 - `checkout.session.expired` -> `failed`
+
+For `flow_type = dedicate_tree`, finalize also attempts a race-safe stock claim via DB function (`claim_tree_campaign_unit`). If stock is claimed, finalize inserts one `tree_dedications` row. If already sold out, finalize sets transaction status `sold_out` and does not insert a dedication row.
+
+### `GET /api/dedicate/campaign`
+
+Returns current campaign data for home popup and dedicate page.
+
+- Response: `{ data: { id, total_quantity, quantity_remaining, active, price_per_tree, image_url }, meta: {} }`
+- `image_url` falls back to `resources.resource_name = 'dedicate_tree'` when campaign image is empty.
+
+### `POST /api/dedicate/upload`
+
+Authenticated upload endpoint for optional dedication images.
+
+- Auth: Bearer token required (authenticated users only).
+- Request: `multipart/form-data` with `file`.
+- Validation: image types (`jpg`, `png`, `webp`, `gif`), max `5MB`.
+- Upload path: `admin-assets` bucket under `dedicate-tree/...`.
+- Response: `{ data: { bucket, path, publicUrl }, meta: {} }`.
 
 ---
 
@@ -214,6 +240,8 @@ Returns rows for the selected admin resource.
   - `sponsors_public`
   - `volunteers`
   - `upcoming_events` (table `upcoming_events`)
+  - `tree_campaign` (table `tree_campaign`)
+  - `tree_dedications` (table `tree_dedications`)
 
 ### `POST /api/admin/:resource`
 
