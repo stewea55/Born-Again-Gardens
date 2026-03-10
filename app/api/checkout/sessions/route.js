@@ -6,6 +6,7 @@ import {
 } from "../../../../lib/checkout/pending";
 import { getStripeClient, getAppBaseUrl } from "../../../../lib/checkout/stripe";
 import { getAuthedServerSupabaseClient } from "../../../../lib/supabase/authed-server";
+import { getServerSupabaseClient } from "../../../../lib/supabase/server";
 import { getCurrentTreeCampaign } from "../../../../lib/dedicate/campaign";
 
 function errorResponse(code, message, status = 400, details = {}) {
@@ -46,6 +47,10 @@ export async function POST(request) {
 
     const input = validation.data;
     let userId = null;
+    let userName = null;
+    let customerEmail = null;
+    let guestName = null;
+
     if (input.entry_mode === "google") {
       const token = getBearerToken(request);
       const supabase = getAuthedServerSupabaseClient(token);
@@ -56,6 +61,19 @@ export async function POST(request) {
       if (!userId) {
         return errorResponse("unauthorized", "Google checkout requires a valid session.", 401);
       }
+      const serverSupabase = getServerSupabaseClient();
+      if (serverSupabase) {
+        const { data: profile } = await serverSupabase
+          .from("profiles")
+          .select("full_name, email")
+          .eq("id", userId)
+          .single();
+        userName = profile?.full_name ?? null;
+        customerEmail = profile?.email ?? null;
+      }
+    } else {
+      guestName = input.guest?.full_name ?? null;
+      customerEmail = input.guest?.email ?? null;
     }
 
     let amountCents = Math.round(input.payment_amount * 100);
@@ -117,6 +135,9 @@ export async function POST(request) {
       sessionId: session.id,
       guestId,
       userId,
+      userName,
+      guestName,
+      customerEmail,
       paymentAmount: amountCents / 100,
       donationAmount: input.donation_amount ?? 0,
       flowType: input.flow_type,
