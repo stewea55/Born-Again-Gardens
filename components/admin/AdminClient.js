@@ -71,6 +71,7 @@ const ADMIN_TABS = [
       { key: "guest_id", label: "Guest ID", type: "text" },
       { key: "user_name", label: "User Name", type: "text" },
       { key: "guest_name", label: "Guest Name", type: "text" },
+      { key: "customer_email", label: "Email", type: "text" },
       { key: "payment", label: "Payment", type: "number" },
       { key: "donation_amount", label: "Donation Amount", type: "number" },
       { key: "flow_type", label: "Flow Type", type: "text" },
