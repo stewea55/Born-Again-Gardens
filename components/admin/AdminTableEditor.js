@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 const PAGE_SIZE = 10;
 
@@ -77,6 +78,11 @@ export default function AdminTableEditor({
   const [status, setStatus] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
+  const [summary, setSummary] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const isTransaction = resource === "transaction";
+  const isReadOnlyResource = isTransaction;
 
   useEffect(() => {
     setNewRow(defaultNewRow);
@@ -101,6 +107,7 @@ export default function AdminTableEditor({
         if (!active) return;
         const nextRows = Array.isArray(payload?.data) ? payload.data : [];
         setRows(nextRows);
+        setSummary(payload?.summary || null);
         setDrafts(
           nextRows.reduce((acc, row) => {
             const key = String(row?.[idField] ?? "");
@@ -140,6 +147,11 @@ export default function AdminTableEditor({
     () => columns.filter((col) => col.key !== idField),
     [columns, idField]
   );
+
+  const totalDonationAmount = Number(summary?.totalDonationAmount || 0);
+  const formattedTotalDonation = Number.isFinite(totalDonationAmount)
+    ? totalDonationAmount.toLocaleString("en-US", { style: "currency", currency: "USD" })
+    : "$0.00";
 
   const setDraftField = (rowId, key, value, type) => {
     const parsed = coerceValue(value, type);
@@ -219,6 +231,17 @@ export default function AdminTableEditor({
     }
   };
 
+  const requestDeleteRow = (row) => {
+    setDeleteTarget(row || null);
+  };
+
+  const confirmDeleteRow = async () => {
+    const row = deleteTarget;
+    setDeleteTarget(null);
+    if (!row) return;
+    await deleteRow(row);
+  };
+
   const createRow = async () => {
     setStatus("");
     setError("");
@@ -276,13 +299,19 @@ export default function AdminTableEditor({
       <h2 className="subheading">{title}</h2>
       {description ? <p className="paragraph">{description}</p> : null}
       <div className="admin-controls">
-        <input
-          type="text"
-          placeholder="Search rows"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          aria-label={`Search ${title}`}
-        />
+        {isTransaction ? (
+          <p className="paragraph">
+            <strong>Total donation amount:</strong> {formattedTotalDonation}
+          </p>
+        ) : (
+          <input
+            type="text"
+            placeholder="Search rows"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            aria-label={`Search ${title}`}
+          />
+        )}
       </div>
 
       {loading ? <p className="paragraph">Loading...</p> : null}
@@ -302,13 +331,15 @@ export default function AdminTableEditor({
                     <p className="paragraph">
                       <strong>{idField}:</strong> {rowId || "new"}
                     </p>
-                    {dirty ? <span className="admin-draft-pill">Draft changes not saved</span> : null}
+                    {!isReadOnlyResource && dirty ? (
+                      <span className="admin-draft-pill">Draft changes not saved</span>
+                    ) : null}
                   </div>
 
                   {columns.map((column) => (
                     <label key={`${rowId}-${column.key}`} className="paragraph admin-field-label">
                       <strong>{column.label}</strong>
-                      {column.key === idField ? (
+                      {column.key === idField || isReadOnlyResource ? (
                         <span className="admin-readonly-id">{toInputValue(draft?.[column.key], column.type)}</span>
                       ) : column.type === "boolean" ? (
                         <select
@@ -343,14 +374,14 @@ export default function AdminTableEditor({
                           onChange={(event) => setDraftField(rowId, column.key, event.target.value, column.type)}
                         />
                       )}
-                      {column.key !== idField && looksLikeImageField(column.key) && draft?.[column.key] ? (
+                      {!isReadOnlyResource && column.key !== idField && looksLikeImageField(column.key) && draft?.[column.key] ? (
                         <img
                           src={draft[column.key]}
                           alt={`${column.label} preview`}
                           className="admin-image-preview"
                         />
                       ) : null}
-                      {column.key !== idField && looksLikeImageField(column.key) ? (
+                      {!isReadOnlyResource && column.key !== idField && looksLikeImageField(column.key) ? (
                         <input
                           type="file"
                           accept="image/*"
@@ -360,17 +391,19 @@ export default function AdminTableEditor({
                     </label>
                   ))}
 
-                  <div className="admin-row-actions">
-                    <button type="button" className="button" onClick={() => saveRow(row)}>
-                      Save
-                    </button>
-                    <button type="button" className="menu-button" onClick={() => resetRow(row)}>
-                      Cancel
-                    </button>
-                    <button type="button" className="menu-button" onClick={() => deleteRow(row)}>
-                      Delete
-                    </button>
-                  </div>
+                  {!isReadOnlyResource ? (
+                    <div className="admin-row-actions">
+                      <button type="button" className="button" onClick={() => saveRow(row)}>
+                        Save
+                      </button>
+                      <button type="button" className="menu-button" onClick={() => resetRow(row)}>
+                        Cancel
+                      </button>
+                      <button type="button" className="menu-button" onClick={() => requestDeleteRow(row)}>
+                        Delete
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               );
             })}
@@ -396,53 +429,63 @@ export default function AdminTableEditor({
             </button>
           </div>
 
-          <div className="admin-new-row">
-            <h3 className="subtitle">Add new row</h3>
-            <p className="paragraph admin-hint">ID is generated automatically. Fill in the fields below and click Create row.</p>
-            {editableColumns.map((column) => (
-              <label key={`new-${column.key}`} className="paragraph admin-field-label">
-                <strong>{column.label}</strong>
-                {column.type === "boolean" ? (
-                  <select
-                    value={newRow?.[column.key] ? "true" : "false"}
-                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
-                  >
-                    <option value="true">true</option>
-                    <option value="false">false</option>
-                  </select>
-                ) : column.type === "json" ? (
-                  <textarea
-                    value={toInputValue(newRow?.[column.key], column.type)}
-                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
-                    rows={3}
-                  />
-                ) : column.type === "date" ? (
-                  <input
-                    type="date"
-                    value={toInputValue(newRow?.[column.key], column.type)}
-                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
-                  />
-                ) : column.type === "time" ? (
-                  <input
-                    type="time"
-                    value={toInputValue(newRow?.[column.key], column.type)}
-                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
-                  />
-                ) : (
-                  <input
-                    type={column.type === "number" ? "number" : "text"}
-                    value={toInputValue(newRow?.[column.key], column.type)}
-                    onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
-                  />
-                )}
-              </label>
-            ))}
-            <button type="button" className="button" onClick={createRow}>
-              Create row
-            </button>
-          </div>
+          {!isReadOnlyResource ? (
+            <div className="admin-new-row">
+              <h3 className="subtitle">Add new row</h3>
+              <p className="paragraph admin-hint">ID is generated automatically. Fill in the fields below and click Create row.</p>
+              {editableColumns.map((column) => (
+                <label key={`new-${column.key}`} className="paragraph admin-field-label">
+                  <strong>{column.label}</strong>
+                  {column.type === "boolean" ? (
+                    <select
+                      value={newRow?.[column.key] ? "true" : "false"}
+                      onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
+                    >
+                      <option value="true">true</option>
+                      <option value="false">false</option>
+                    </select>
+                  ) : column.type === "json" ? (
+                    <textarea
+                      value={toInputValue(newRow?.[column.key], column.type)}
+                      onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
+                      rows={3}
+                    />
+                  ) : column.type === "date" ? (
+                    <input
+                      type="date"
+                      value={toInputValue(newRow?.[column.key], column.type)}
+                      onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
+                    />
+                  ) : column.type === "time" ? (
+                    <input
+                      type="time"
+                      value={toInputValue(newRow?.[column.key], column.type)}
+                      onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
+                    />
+                  ) : (
+                    <input
+                      type={column.type === "number" ? "number" : "text"}
+                      value={toInputValue(newRow?.[column.key], column.type)}
+                      onChange={(event) => setNewRowField(column.key, event.target.value, column.type)}
+                    />
+                  )}
+                </label>
+              ))}
+              <button type="button" className="button" onClick={createRow}>
+                Create row
+              </button>
+            </div>
+          ) : null}
         </>
       )}
+      <DeleteConfirmModal
+        open={!!deleteTarget}
+        title="Confirm deletion"
+        message="Delete this row permanently from the database?"
+        confirmLabel="Confirm delete"
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={confirmDeleteRow}
+      />
     </section>
   );
 }

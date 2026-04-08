@@ -243,6 +243,13 @@ Returns rows for the selected admin resource.
   - `tree_campaign` (table `tree_campaign`)
   - `tree_dedications` (table `tree_dedications`)
 
+**Date:** 2026-04-08 (transactions response enrichment)
+
+- For `resource = transaction`, response now includes:
+  - `data`: transaction rows where `user_name` / `guest_name` are fallback-filled from `profiles.full_name` and `guests.full_name` when those transaction columns are blank.
+  - `summary`: `{ "totalDonationAmount": number }`, where total is computed across the full `transaction` table as the sum of `payment` for rows with `status = "paid"` and `flow_type IN ("dedicate_tree", "donate")`.
+- For non-transaction resources, `summary` is `null`.
+
 ### `POST /api/admin/:resource`
 
 Creates or updates a row for the selected resource.

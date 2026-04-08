@@ -33,8 +33,8 @@ export async function GET(request, { params }) {
 
   const { resource } = await params;
   try {
-    const rows = await listResourceRows(supabase, resource);
-    return NextResponse.json({ data: rows });
+    const { rows, summary } = await listResourceRows(supabase, resource);
+    return NextResponse.json({ data: rows, summary: summary || null });
   } catch (nextError) {
     return NextResponse.json({ error: nextError.message || "Could not load admin data." }, { status: 400 });
   }
