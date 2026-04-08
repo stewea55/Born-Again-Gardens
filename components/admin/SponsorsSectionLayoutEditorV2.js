@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 const DEFAULT_CANVAS = { width: 1000, height: 500 };
 const DEFAULT_LOGO = { width: 240, height: 150 };
@@ -197,6 +198,7 @@ export default function SponsorsSectionLayoutEditorV2({ session }) {
   const [orderIds, setOrderIds] = useState([]);
   const [selectedObjectId, setSelectedObjectId] = useState("");
   const [interaction, setInteraction] = useState(null);
+  const [deleteObjectId, setDeleteObjectId] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -391,6 +393,17 @@ export default function SponsorsSectionLayoutEditorV2({ session }) {
     });
     setOrderIds((prev) => prev.filter((id) => id !== objectId));
     if (selectedObjectId === objectId) setSelectedObjectId("");
+  };
+
+  const requestRemoveObject = (objectId) => {
+    setDeleteObjectId(String(objectId || ""));
+  };
+
+  const confirmRemoveObject = () => {
+    const objectId = deleteObjectId;
+    setDeleteObjectId("");
+    if (!objectId) return;
+    removeObject(objectId);
   };
 
   const moveLayer = (direction) => {
@@ -590,7 +603,7 @@ export default function SponsorsSectionLayoutEditorV2({ session }) {
                     aria-label={`Remove ${item.kind} for ${title}`}
                     onClick={(event) => {
                       event.stopPropagation();
-                      removeObject(objectId);
+                      requestRemoveObject(objectId);
                     }}
                   >
                     X
@@ -676,6 +689,14 @@ export default function SponsorsSectionLayoutEditorV2({ session }) {
           )}
         </aside>
       </div>
+      <DeleteConfirmModal
+        open={!!deleteObjectId}
+        title="Confirm deletion"
+        message="Remove this object from the sponsors layout?"
+        confirmLabel="Confirm delete"
+        onCancel={() => setDeleteObjectId("")}
+        onConfirm={confirmRemoveObject}
+      />
     </section>
   );
 }
