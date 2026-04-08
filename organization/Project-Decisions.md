@@ -147,3 +147,11 @@
 - **Finalize on return:** When the user lands on the payment return URL, `GET /api/checkout/session-status` is called. If Stripe reports the session as `complete`, we call `finalizeCheckoutByStripeId` there as well (idempotent: if the transaction is already `paid` or `sold_out`, we skip). This ensures `tree_dedications` and transaction status are updated even when the Stripe webhook has not yet run (e.g. local dev or webhook delay).
 - **Home + return UX:** Home now shows a once-per-visit dedicate popup only when `quantity_remaining > 0`. Payment return now reads transaction `flow_type` and shows dedicated success copy for `dedicate_tree`.
 - **Admin visibility:** Admin now has `tree_campaign` and `tree_dedications` tabs for managing campaign settings and reviewing submissions (name, email, image, dedication text, payment confirmation).
+
+**Date:** 2026-04-08 (Admin delete and transactions UX)
+
+- **Admin delete confirmation:** Every delete/remove action in `/admin` now requires a confirmation popup before proceeding, including table row deletes and sponsors canvas object removes.
+- **Transactions tab read-only:** Transactions in `/admin` are view-only (no create/edit/delete controls in that tab).
+- **Transactions display order:** Transactions fields render as User Name, Guest Name, User ID, Guest ID, then existing payment/context/status fields; row id stays in the card header.
+- **Transactions totals + fallback names:** Transactions admin view now shows `Total donation amount` computed as sum of `payment` where `status = paid` and `flow_type in (dedicate_tree, donate)` across all rows. Missing `user_name`/`guest_name` values are fallback-filled from `profiles.full_name` and `guests.full_name` by id.
+- **Dedicate popup quantity source:** Home campaign fetch prefers the active `tree_campaign` row and uses its `quantity_remaining` for popup availability/count.

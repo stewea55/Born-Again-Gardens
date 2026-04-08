@@ -89,3 +89,8 @@ If someone submits the basket with $0 payment, we don't show the sign-in popup. 
 
 **Date:** 2026-03-09 (Dedicate a Tree)  
 We added a new `/dedicate` page where people can dedicate a tree, but this path is Google sign-in only (no guest checkout). The tree price is fixed at $350, we only show the home popup while trees are still available, and admins can now view/manage campaign settings plus dedication submissions.
+
+**Date:** 2026-04-08  
+On admin, deleting now always asks "confirm or cancel" first (including sponsor canvas remove X).  
+The transactions tab is now read-only, shows names before IDs, and shows a total donation amount from all paid dedicate/donate rows. If a transaction name is missing, we fill it from the matching user/guest record by id.  
+For the home dedicate popup, we now read the active campaign row first and show its real `quantity_remaining`.
