@@ -93,7 +93,7 @@ export default function PaymentClient() {
       return;
     }
     if (context?.flow_type === "basket" && !basketDisclaimerAccepted) {
-      setStatus("Please confirm that you understand basket selections are for in-person harvest planning only to continue.");
+      setStatus("Please confirm that you understand this feature is for IN PERSON harvesting ONLY, and plant quantities are not guaranteed nor reflected by availability on the website, to continue.");
       return;
     }
     const payload = buildPayload();
@@ -231,10 +231,10 @@ export default function PaymentClient() {
             type="checkbox"
             checked={basketDisclaimerAccepted}
             onChange={(e) => setBasketDisclaimerAccepted(e.target.checked)}
-            aria-label="I understand basket selections are for in-person harvest planning only"
+            aria-label="I understand that this feature is for IN PERSON harvesting ONLY, and plant quantities are not guaranteed nor reflected by availabilty on the website"
           />
           <span>
-            I understand basket selections are for in-person harvest planning only
+            I understand that this feature is for IN PERSON harvesting ONLY, and plant quantities are not guaranteed nor reflected by availabilty on the website
           </span>
         </label>
       )}

@@ -15,7 +15,7 @@ export default async function HomePage() {
   const sponsors = sponsorSection.sponsors || [];
   const canvas = sponsorSection.canvas || { width: 1000, height: 500 };
   const quantityRemaining = Number(campaign?.quantity_remaining || 0);
-  const campaignIsActive = Boolean(campaign?.active) && quantityRemaining > 0;
+  const campaignIsActive = false;
   const campaignImageUrl = campaign?.image_url || dedicateImage || null;
 
   return (

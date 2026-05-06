@@ -59,18 +59,23 @@ export default function HarvestClient({ plants }) {
     [plants]
   );
 
+  const activePlants = useMemo(
+    () => sortedPlants.filter((plant) => plant.statys !== false),
+    [sortedPlants]
+  );
+
   const categoryOptions = useMemo(() => {
     const unique = new Set();
-    sortedPlants.forEach((plant) => {
+    activePlants.forEach((plant) => {
       if (hasDisplayValue(plant?.category)) unique.add(plant.category);
     });
     return [...unique].sort((a, b) => String(a).localeCompare(String(b), undefined, { sensitivity: "base" }));
-  }, [sortedPlants]);
+  }, [activePlants]);
 
   const categoryFilteredPlants = useMemo(() => {
-    if (selectedCategories.length === 0) return sortedPlants;
-    return sortedPlants.filter((plant) => selectedCategories.includes(plant.category));
-  }, [selectedCategories, sortedPlants]);
+    if (selectedCategories.length === 0) return activePlants;
+    return activePlants.filter((plant) => selectedCategories.includes(plant.category));
+  }, [selectedCategories, activePlants]);
 
   const visiblePlants = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();

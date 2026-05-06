@@ -127,7 +127,7 @@
 
 - **Basket disclaimer:** Basket page shows the disclaimer "Basket selections are for in-person harvest planning only and do not guarantee availability or quantity." below Payment Amount and above the Back to harvest / Confirm and checkout buttons.
 - **Checkout gate modal copy:** Removed the sentence "Closing this popup keeps you on this page." from the Continue to payment modal; it now only says "Choose one option to continue."
-- **Basket-flow payment checkbox:** When payment is reached from the basket flow (`flow_type === "basket"`), the payment page shows a required checkbox "I understand basket selections are for in-person harvest planning only." Users must check it to continue; otherwise they see a message. Donate and cart flows are unchanged and do not see this checkbox.
+- **Basket-flow payment checkbox:** When payment is reached from the basket flow (`flow_type === "basket"`), the payment page shows a required checkbox "I understand that this feature is for IN PERSON harvesting ONLY, and plant quantities are not guaranteed nor reflected by availabilty on the website." Users must check it to continue; otherwise they see a message. Donate and cart flows are unchanged and do not see this checkbox.
 
 **Date:** 2026-03-07
 
@@ -145,7 +145,7 @@
 - **Pricing and validation:** Dedicate flow is fixed at `$350` and not editable by users. API creates Stripe sessions using server campaign price and rejects mismatched client amounts.
 - **Stock safety:** Webhook finalize uses a race-safe stock claim function (`claim_tree_campaign_unit`) before creating `tree_dedications` rows. If sold out during finalize, we mark transaction status `sold_out` and do not insert a dedication row.
 - **Finalize on return:** When the user lands on the payment return URL, `GET /api/checkout/session-status` is called. If Stripe reports the session as `complete`, we call `finalizeCheckoutByStripeId` there as well (idempotent: if the transaction is already `paid` or `sold_out`, we skip). This ensures `tree_dedications` and transaction status are updated even when the Stripe webhook has not yet run (e.g. local dev or webhook delay).
-- **Home + return UX:** Home now shows a once-per-visit dedicate popup only when `quantity_remaining > 0`. Payment return now reads transaction `flow_type` and shows dedicated success copy for `dedicate_tree`.
+- **Home + return UX:** The dedicate tree popup on the homepage has been disabled (`campaignIsActive` hardcoded to `false`); the `/dedicate` page remains live. Payment return now reads transaction `flow_type` and shows dedicated success copy for `dedicate_tree`.
 - **Admin visibility:** Admin now has `tree_campaign` and `tree_dedications` tabs for managing campaign settings and reviewing submissions (name, email, image, dedication text, payment confirmation).
 
 **Date:** 2026-04-08 (Admin delete and transactions UX)

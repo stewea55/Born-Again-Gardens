@@ -79,7 +79,7 @@ On harvest, Add to basket and Confirm never show together: quantity 0 means Add 
 We removed temporary shop/payment wording and added a new homepage wishlist link card.
 
 **Date:** 2026-03-07 (Basket CYA)  
-We added a disclaimer on the basket page that selections are for in-person harvest planning only. We removed the "Closing this popup keeps you on this page" line from the sign-in popup. When someone pays from the basket flow, they must check a box saying they understand basket items are for in-person harvest planning only; donate and cart flows are unchanged.
+We added a disclaimer on the basket page that selections are for in-person harvest planning only. We removed the "Closing this popup keeps you on this page" line from the sign-in popup. When someone pays from the basket flow, they must check a box saying they understand this feature is for IN PERSON harvesting ONLY and quantities are not guaranteed; donate and cart flows are unchanged.
 
 **Date:** 2026-03-07  
 On the shop page, when we have products the first card now shows "Our shop" so it’s never empty; the “still building” message still shows when there are no products.
@@ -88,7 +88,7 @@ On the shop page, when we have products the first card now shows "Our shop" so i
 If someone submits the basket with $0 payment, we don't show the sign-in popup. We record their harvest quantities in the database (same as when they pay), clear their basket, and send them to a thank-you page at /harvested that says thanks for visiting and suggests volunteering.
 
 **Date:** 2026-03-09 (Dedicate a Tree)  
-We added a new `/dedicate` page where people can dedicate a tree, but this path is Google sign-in only (no guest checkout). The tree price is fixed at $350, we only show the home popup while trees are still available, and admins can now view/manage campaign settings plus dedication submissions.
+We added a new `/dedicate` page where people can dedicate a tree, but this path is Google sign-in only (no guest checkout). The tree price is fixed at $350. The homepage popup has been turned off — the `/dedicate` page is still live and accessible. Admins can view/manage campaign settings plus dedication submissions.
 
 **Date:** 2026-04-08  
 On admin, deleting now always asks "confirm or cancel" first (including sponsor canvas remove X).  
